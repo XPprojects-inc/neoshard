@@ -159,8 +159,8 @@ impl Device {
             signature_key: public.into(),
         };
         let mut groups = HashMap::new();
-        for chunk in ids.chunks_exact(8) {
-            let cid = u64::from_le_bytes(chunk.try_into().expect("8 bytes"));
+        for chunk in ids.as_chunks::<8>().0 {
+            let cid = u64::from_le_bytes(*chunk);
             if let Some(g) = MlsGroup::load(provider.storage(), &group_id(cid)).map_err(mls)? {
                 groups.insert(cid, g);
             }

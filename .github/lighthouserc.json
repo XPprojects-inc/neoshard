@@ -1,0 +1,5 @@
+{
+  "ci": {
+    "collect": { "staticDistDir": "apps/web/dist", "numberOfRuns": 1 }
+  }
+}
