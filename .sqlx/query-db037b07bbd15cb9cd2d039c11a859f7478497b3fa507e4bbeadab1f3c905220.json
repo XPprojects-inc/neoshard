@@ -1,0 +1,58 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT pronouns, bio, banner, banner_color, theme_colors, profile_effect, created_at FROM users WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "pronouns",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "bio",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "banner",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "banner_color",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "theme_colors",
+        "type_info": "Int4Array"
+      },
+      {
+        "ordinal": 5,
+        "name": "profile_effect",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "db037b07bbd15cb9cd2d039c11a859f7478497b3fa507e4bbeadab1f3c905220"
+}

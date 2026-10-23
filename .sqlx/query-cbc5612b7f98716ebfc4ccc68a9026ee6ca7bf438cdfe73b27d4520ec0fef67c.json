@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT w.id, w.channel_id FROM channel_follows f JOIN webhooks w ON w.id = f.webhook_id WHERE f.source_channel_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "channel_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "cbc5612b7f98716ebfc4ccc68a9026ee6ca7bf438cdfe73b27d4520ec0fef67c"
+}

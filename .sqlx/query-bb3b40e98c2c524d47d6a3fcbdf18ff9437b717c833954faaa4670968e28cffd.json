@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO sessions (id, user_id, token_hash, device) VALUES ($1, $2, $3, 'bot')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Bytea"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "bb3b40e98c2c524d47d6a3fcbdf18ff9437b717c833954faaa4670968e28cffd"
+}

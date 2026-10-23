@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT channel_id FROM dm_pairs WHERE user_a = $1 AND user_b = $2 AND e2ee = $3",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "channel_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "b8ded5cada603300db06bdb2b0c7778fb39dd919491cd3301a9ffc5fffa535b8"
+}

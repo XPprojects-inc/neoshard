@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO read_states (user_id, channel_id, last_read_message_id, mention_count) VALUES ($1, $2, $3, 0)\n         ON CONFLICT (user_id, channel_id) DO UPDATE\n            SET last_read_message_id = GREATEST(read_states.last_read_message_id, EXCLUDED.last_read_message_id), mention_count = 0\n         RETURNING last_read_message_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "last_read_message_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "71bdcc568098ccb045a45385d8d7d5fbcc4f3d2f1c9b04419178f3816f483e92"
+}

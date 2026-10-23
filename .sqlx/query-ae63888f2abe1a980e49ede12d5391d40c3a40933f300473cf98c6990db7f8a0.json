@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE users SET username = 'deleted_' || id::text, display_name = '', email = NULL, password_hash = NULL,\n                avatar = '', mfa_secret_enc = NULL, mfa_enabled = FALSE, custom_status = '', deleted_at = now(),\n                pronouns = '', bio = '', banner = '', banner_color = NULL, theme_colors = '{}',\n                avatar_decoration = '', profile_effect = '', nameplate = '', name_font = '', name_effect = '',\n                name_colors = '{}', custom_status_emoji = '', custom_status_expires_at = NULL, primary_guild_id = NULL\n         WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ae63888f2abe1a980e49ede12d5391d40c3a40933f300473cf98c6990db7f8a0"
+}

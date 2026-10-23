@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO interactions (id, application_id, token_hash, guild_id, channel_id, user_id, expires_at)\n         VALUES ($1, $2, $3, $4, $5, $6, now() + interval '15 minutes')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Bytea",
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "91d43845fa52aa7218d930a747915ca4b06f8eb61fed55263a8dc53d0ccb919b"
+}

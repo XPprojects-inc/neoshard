@@ -1,0 +1,5 @@
+apiVersion: 1
+providers:
+  - name: neoshard
+    folder: NeoShard
+    options: { path: /var/lib/grafana/dashboards }

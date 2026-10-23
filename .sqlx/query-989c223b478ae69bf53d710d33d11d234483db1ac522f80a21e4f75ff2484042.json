@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT a.peer_id FROM relationships a JOIN relationships b ON a.peer_id = b.peer_id\n             WHERE a.user_id = $1 AND b.user_id = $2 AND a.kind = 1 AND b.kind = 1 ORDER BY a.peer_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "peer_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "989c223b478ae69bf53d710d33d11d234483db1ac522f80a21e4f75ff2484042"
+}

@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO channel_follows (source_channel_id, webhook_id) VALUES ($1, $2)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4bd3003aecdba2a9ddf03e7cb34448a2a888190e6fe4c0f199e737749db1f5da"
+}

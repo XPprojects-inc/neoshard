@@ -1,0 +1,11 @@
+{
+  "name": "neoshard-media-e2e",
+  "private": true,
+  "description": "End-to-end media check against a real LiveKit server (see README.md). Not part of the app bundle.",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": { "test": "node livekit-e2e.mjs" },
+  "dependencies": {
+    "@livekit/rtc-node": "1.1.0"
+  }
+}

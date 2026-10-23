@@ -1,0 +1,113 @@
+/* Base styles and primitive components. Only CSS variables, no raw colours. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--ns-bg);
+  color: var(--ns-text);
+  font: 400 15px/22px var(--ns-font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+a { color: var(--ns-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--ns-focus); outline-offset: 2px; }
+.ns-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---- Button */
+.ns-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding: 0 16px; border: 0; border-radius: var(--ns-radius-sm);
+  font-weight: 600; font-size: 14px; cursor: pointer; user-select: none;
+  transition: background-color var(--ns-dur-fast) var(--ns-ease), transform var(--ns-dur-instant) var(--ns-ease), opacity var(--ns-dur-fast);
+}
+.ns-btn:active:not(:disabled) { transform: scale(.97); }
+.ns-btn:disabled { opacity: .5; cursor: not-allowed; }
+.ns-btn[aria-busy="true"] { cursor: progress; }
+.ns-btn--sm { height: 32px; padding: 0 12px; }
+.ns-btn--primary { background: var(--ns-accent); color: var(--ns-on-accent); }
+.ns-btn--primary:hover:not(:disabled) { background: var(--ns-accent-hover); }
+.ns-btn--secondary { background: var(--ns-surface-2); color: var(--ns-text); }
+.ns-btn--secondary:hover:not(:disabled) { background: var(--ns-surface-hover); }
+.ns-btn--ghost { background: transparent; color: var(--ns-text-muted); }
+.ns-btn--ghost:hover:not(:disabled) { background: var(--ns-surface-hover); color: var(--ns-text); }
+.ns-btn--danger { background: var(--ns-danger); color: var(--ns-on-danger); }
+.ns-icon-btn { width: 32px; height: 32px; padding: 0; border-radius: var(--ns-radius-sm); background: transparent; border: 0; color: var(--ns-text-muted); display: inline-grid; place-items: center; cursor: pointer; }
+.ns-icon-btn:hover { background: var(--ns-surface-hover); color: var(--ns-text); }
+.ns-icon-btn[aria-pressed="true"] { color: var(--ns-danger); }
+
+/* ---- Inputs */
+.ns-field { display: grid; gap: 6px; }
+.ns-label { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ns-text-muted); }
+.ns-input {
+  height: 40px; padding: 0 12px; border-radius: var(--ns-radius-sm);
+  background: var(--ns-bg); border: 1px solid var(--ns-border-input); color: var(--ns-text);
+}
+.ns-input:focus { outline: 2px solid var(--ns-focus); outline-offset: 0; border-color: transparent; }
+.ns-input[aria-invalid="true"] { border-color: var(--ns-danger); }
+.ns-error { color: var(--ns-danger); font-size: 13px; }
+
+/* ---- Avatar */
+.ns-avatar { position: relative; flex: none; border-radius: 50%; display: inline-grid; place-items: center; font-weight: 700; color: #fff; overflow: visible; }
+.ns-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.ns-status { position: absolute; right: -2px; bottom: -2px; width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--ns-surface); }
+.ns-status--online { background: var(--ns-success); }
+.ns-status--idle { background: var(--ns-warning); }
+.ns-status--dnd { background: var(--ns-danger); }
+.ns-status--offline { background: var(--ns-text-faint); }
+
+/* ---- Modal & toast */
+.ns-backdrop { position: fixed; inset: 0; background: rgb(0 0 0 / .6); display: grid; place-items: center; z-index: 50; }
+.ns-modal { width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 64px); overflow: auto; background: var(--ns-surface); border-radius: var(--ns-radius-lg); box-shadow: var(--ns-shadow-pop); padding: 24px; display: grid; gap: 16px; }
+.ns-modal h2 { margin: 0; font-size: 20px; line-height: 26px; }
+.ns-toasts { position: fixed; right: 16px; bottom: 16px; display: grid; gap: 8px; z-index: 60; }
+.ns-toast { background: var(--ns-surface-2); color: var(--ns-text); padding: 12px 16px; border-radius: var(--ns-radius-md); box-shadow: var(--ns-shadow-pop); min-width: 240px; max-width: 360px; }
+.ns-toast--error { border-left: 4px solid var(--ns-danger); }
+
+/* ---- Spinner (CSS only, disabled with reduced motion) */
+.ns-spinner { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--ns-border); border-top-color: var(--ns-accent); animation: ns-spin .8s linear infinite; }
+@keyframes ns-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ns-spinner { animation: none; } }
+
+/* ---- Avatar decoration (frame drawn over the avatar edge) */
+.ns-avatar-deco { position: absolute; inset: calc(var(--ns-avatar-size) * -0.17); pointer-events: none; display: block; }
+.ns-avatar-deco svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.ns-avatar .ns-status { z-index: 1; }
+
+/* ---- Fields */
+.ns-textarea { height: auto; padding: 8px 12px; resize: vertical; line-height: 20px; }
+.ns-field-hint { font-size: 12px; color: var(--ns-text-faint); text-align: right; }
+.ns-field-hint.over { color: var(--ns-danger); }
+.ns-color { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.ns-color input { width: 44px; height: 44px; padding: 0; border: 2px solid var(--ns-border); border-radius: var(--ns-radius-md); background: none; cursor: pointer; }
+.ns-color input::-webkit-color-swatch-wrapper { padding: 3px; }
+.ns-color input::-webkit-color-swatch { border: 0; border-radius: 6px; }
+.ns-color span { display: grid; font-size: 14px; }
+.ns-color small { color: var(--ns-text-faint); font-family: var(--ns-font-mono); font-size: 12px; }
+
+/* ---- Popover / menu / tooltip */
+.ns-popover { position: fixed; z-index: 70; background: var(--ns-surface-2); color: var(--ns-text); border: 1px solid var(--ns-border); border-radius: var(--ns-radius-md); box-shadow: var(--ns-shadow-pop); outline: none; max-height: calc(100vh - 16px); overflow: auto; }
+.ns-menu { min-width: 200px; padding: 6px; }
+.ns-menu-item { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 6px 8px; border-radius: var(--ns-radius-sm); font-size: 14px; cursor: pointer; color: var(--ns-text-muted); }
+.ns-menu-item:hover, .ns-menu-item:focus-visible { background: var(--ns-accent); color: var(--ns-on-accent); outline: none; }
+.ns-menu-item.danger { color: var(--ns-danger); }
+.ns-menu-item.danger:hover, .ns-menu-item.danger:focus-visible { background: var(--ns-danger); color: var(--ns-on-danger); }
+.ns-menu-item[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+.ns-menu-item[aria-checked="true"] .ns-menu-label::after { content: " ✓"; }
+.ns-menu-label { flex: 1; }
+.ns-menu-item small { opacity: .8; font-size: 12px; }
+.ns-menu-icon { display: inline-grid; }
+.ns-menu-sep { height: 1px; background: var(--ns-border); margin: 4px 6px; }
+.ns-tip-host { display: inline-flex; }
+.ns-tooltip { position: fixed; z-index: 80; pointer-events: none; background: var(--ns-bg-rail); color: var(--ns-text); padding: 6px 10px; border-radius: var(--ns-radius-sm); font-size: 13px; font-weight: 600; box-shadow: var(--ns-shadow-pop); max-width: 260px; }
+
+/* ---- Switch */
+.ns-switch-row { all: unset; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; padding: 8px 0; cursor: pointer; }
+.ns-switch-row:focus-visible { outline: 2px solid var(--ns-focus); outline-offset: 2px; border-radius: 4px; }
+.ns-switch-row:disabled { opacity: .5; cursor: not-allowed; }
+.ns-switch-text { display: grid; gap: 2px; }
+.ns-switch-text small { color: var(--ns-text-muted); font-size: 13px; }
+.ns-switch { flex: none; width: 40px; height: 24px; border-radius: 12px; background: var(--ns-border-input); position: relative; transition: background-color var(--ns-dur-fast) var(--ns-ease); }
+.ns-switch span { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform var(--ns-dur-fast) var(--ns-ease); }
+.ns-switch-row[aria-checked="true"] .ns-switch { background: var(--ns-accent); }
+.ns-switch-row[aria-checked="true"] .ns-switch span { transform: translateX(16px); }

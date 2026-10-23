@@ -1,0 +1,13 @@
+{
+  "title": "NeoShard",
+  "uid": "neoshard",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "panels": [
+    { "type": "stat", "title": "Gateway connections", "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "sum(neoshard_gateway_connections)" }] },
+    { "type": "stat", "title": "Sessions (incl. resumable)", "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "sum(neoshard_gateway_sessions)" }] },
+    { "type": "stat", "title": "Users online", "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "sum(neoshard_presence_online)" }] },
+    { "type": "timeseries", "title": "Events in/out per second", "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "sum(rate(neoshard_gateway_events_in_total[1m]))", "legendFormat": "in" }, { "expr": "sum(rate(neoshard_gateway_events_out_total[1m]))", "legendFormat": "out" }] },
+    { "type": "timeseries", "title": "Slow sessions dropped", "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "sum(rate(neoshard_gateway_dropped_slow_total[5m]))" }] }
+  ]
+}

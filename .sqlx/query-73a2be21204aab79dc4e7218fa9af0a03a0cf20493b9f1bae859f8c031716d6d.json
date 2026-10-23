@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO bans (guild_id, user_id, reason, banned_by) VALUES ($1, $2, $3, $4)\n         ON CONFLICT (guild_id, user_id) DO UPDATE SET reason = EXCLUDED.reason",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "73a2be21204aab79dc4e7218fa9af0a03a0cf20493b9f1bae859f8c031716d6d"
+}

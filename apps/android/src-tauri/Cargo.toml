@@ -1,0 +1,32 @@
+[package]
+name = "neoshard-android"
+version = "0.1.5"
+description = "NeoShard for Android (Tauri 2 mobile) with the native neoshard-core"
+license = "GPL-3.0-or-later"
+edition = "2024"
+
+[workspace]
+
+# Android loads the app as a shared library through JNI. It lives apart from
+# apps/desktop because a cdylib with openmls overflows the Windows PE export
+# table there; the app code itself is shared (src/lib.rs includes it).
+[lib]
+name = "neoshard_android_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+neoshard-core = { path = "../../../crates/neoshard-core", features = ["native", "audio", "e2ee"] }
+prost = "0.14"
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "macros"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

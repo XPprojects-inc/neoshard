@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: CC-BY-4.0
+asyncapi: 3.0.0
+info:
+  title: NeoShard Gateway
+  version: "1.0.0"
+  description: |
+    Realtime protocol. Binary WebSocket frames, one protobuf `neoshard.v1.GatewayFrame`
+    each, optionally zstd-compressed per frame (self-describing by magic bytes).
+    Behaviour: spec/gateway.md. Schemas: spec/proto/neoshard/v1/gateway.proto.
+  license: { name: CC-BY-4.0, url: https://creativecommons.org/licenses/by/4.0/ }
+servers:
+  production:
+    host: neoshard.ru
+    pathname: /gateway
+    protocol: wss
+    description: "Query: v=1, compress=zstd (optional)"
+channels:
+  gateway:
+    address: /gateway
+    messages:
+      clientFrame:
+        name: ClientFrame
+        summary: "GatewayFrame from client: identify | resume | heartbeat | request"
+        contentType: application/x-protobuf
+        payload:
+          schemaFormat: application/vnd.google.protobuf;version=3
+          schema: { $ref: "proto/neoshard/v1/gateway.proto#/GatewayFrame" }
+      serverFrame:
+        name: ServerFrame
+        summary: "GatewayFrame from server: hello | heartbeat_ack | ready | resumed | dispatch | invalid_session | reconnect | error"
+        contentType: application/x-protobuf
+        payload:
+          schemaFormat: application/vnd.google.protobuf;version=3
+          schema: { $ref: "proto/neoshard/v1/gateway.proto#/GatewayFrame" }
+operations:
+  send:
+    action: send
+    channel: { $ref: "#/channels/gateway" }
+    messages: [{ $ref: "#/channels/gateway/messages/clientFrame" }]
+  receive:
+    action: receive
+    channel: { $ref: "#/channels/gateway" }
+    messages: [{ $ref: "#/channels/gateway/messages/serverFrame" }]

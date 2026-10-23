@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO federation_instances (domain, public_key) VALUES ($1, $2) ON CONFLICT (domain) DO NOTHING",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Bytea"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3700e218e85b59f9e1c55c9cd5fc0a1a6ea027ac591ede6ab8b4cf7b24d4dc3f"
+}

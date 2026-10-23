@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO channel_recipients (channel_id, user_id) VALUES ($1, $2), ($1, $3)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "7f2cbfba7ef29f30e8ba9c6712dd45c115bc6d50ed0451fcb12d904eeb454356"
+}

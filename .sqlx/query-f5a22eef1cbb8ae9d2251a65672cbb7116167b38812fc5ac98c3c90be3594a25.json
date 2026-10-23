@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO audit_log (id, guild_id, user_id, action, target_id, changes) VALUES ($1, $2, $3, 'channel.follow', $4, $5)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Jsonb"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f5a22eef1cbb8ae9d2251a65672cbb7116167b38812fc5ac98c3c90be3594a25"
+}

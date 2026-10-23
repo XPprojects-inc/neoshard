@@ -1,0 +1,86 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env: { POSTGRES_USER: neoshard, POSTGRES_PASSWORD: neoshard, POSTGRES_DB: neoshard }
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 20
+    env:
+      DATABASE_URL: postgres://neoshard:neoshard@localhost:5432/neoshard
+      SQLX_OFFLINE: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { components: "clippy, rustfmt" }
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - run: cargo install sqlx-cli --no-default-features --features postgres,rustls --locked
+      - run: sqlx migrate run --source server/migrations
+      - run: cargo sqlx prepare --workspace --check -- --all-targets
+      - run: cargo test --workspace --all-features
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: wasm32-unknown-unknown }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: cargo install wasm-bindgen-cli --version 0.2.129 --locked
+      - run: npm ci && npm run proto && npm run wasm   # fails if the WASM budget (400 KiB gzip) is exceeded
+      - run: npm run typecheck && npm test
+      - run: npm run build
+      - name: JS budget (initial < 150 KiB gzip)
+        run: node scripts/check-budget.mjs apps/web/dist
+      - name: Lighthouse (mobile, slow 4G)
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          staticDistDir: apps/web/dist
+          budgetPath: .github/lighthouse-budget.json
+          uploadArtifacts: true
+
+  # Real media path: NeoShard-issued tokens against a real LiveKit (tests/media/README.md).
+  media:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env: { POSTGRES_USER: neoshard, POSTGRES_PASSWORD: neoshard, POSTGRES_DB: neoshard }
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 20
+    env:
+      DATABASE_URL: postgres://neoshard:neoshard@localhost:5432/neoshard
+      SQLX_OFFLINE: "true"
+      LIVEKIT_URL: ws://127.0.0.1:7880
+      LIVEKIT_API_KEY: devkey
+      LIVEKIT_API_SECRET: secret
+      NEOSHARD_TURN_SECRET: ci-turn-secret
+      NEOSHARD_TURN_URLS: turn:127.0.0.1:3478
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: LiveKit server (pinned release, checksum verified)
+        run: |
+          curl -sSLo lk.tgz https://github.com/livekit/livekit/releases/download/v1.13.10/livekit_1.13.10_linux_amd64.tar.gz
+          echo "c25a3e45fb922e9a93c6443d10c0ed041ba64342097e38632331736630283165  lk.tgz" | sha256sum -c -
+          tar xzf lk.tgz livekit-server
+          ./livekit-server --dev --bind 127.0.0.1 > livekit.log 2>&1 &
+      - run: cargo build -p neoshard-server --release
+      - name: NeoShard server
+        run: |
+          NEOSHARD_SECRET_KEY=AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8= NEOSHARD_PUBLIC_URL=http://127.0.0.1:8080 \
+          NEOSHARD_BIND=127.0.0.1:8080 NEOSHARD_DEV=true ./target/release/neoshard-server > server.log 2>&1 &
+          timeout 60 bash -c 'until curl -sf http://127.0.0.1:8080/.well-known/neoshard; do sleep 1; done'
+      - run: cd tests/media && npm install --no-audit --no-fund && npm test
+      - if: failure()
+        run: tail -100 server.log livekit.log

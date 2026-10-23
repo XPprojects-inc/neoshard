@@ -1,0 +1,26 @@
+[package]
+name = "neoshard-desktop"
+version = "0.1.5"
+description = "NeoShard desktop (Tauri 2) with the native neoshard-core"
+license = "GPL-3.0-or-later"
+edition = "2024"
+
+[workspace]
+
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+neoshard-core = { path = "../../../crates/neoshard-core", features = ["native", "audio", "e2ee"] }
+prost = "0.14"
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "macros"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT channel_id, last_read_message_id, mention_count FROM read_states WHERE user_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "channel_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "last_read_message_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "mention_count",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "8d9f4928237b91fe26c2780b49ff54ab861389c5158142861163339a93eaa724"
+}

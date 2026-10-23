@@ -1,0 +1,20 @@
+{
+  "color": {
+    "bg": "#ffffff", "bg-rail": "#e9edf2", "surface": "#f5f7fa", "surface-2": "#edf1f5", "surface-hover": "#e3e8ee",
+    "border": "#d9dfe6", "border-input": "#7a8594",
+    "text": "#121820", "text-muted": "#4f5a68", "text-faint": "#6b7685",
+    "accent": "#0a6e5c", "accent-hover": "#085a4b", "on-accent": "#ffffff",
+    "mention-bg": "#fff4d1", "mention-text": "#6b4b00",
+    "danger": "#c22f2f", "on-danger": "#ffffff", "success": "#167a46", "warning": "#8a6100",
+    "link": "#1f63c6", "focus": "#1f63c6"
+  },
+  "pairs": [
+    ["text", "bg"], ["text", "surface"], ["text", "surface-2"], ["text", "surface-hover"], ["text", "bg-rail"],
+    ["text-muted", "bg"], ["text-muted", "surface"], ["text-muted", "surface-2"],
+    ["text-faint", "surface", "large"],
+    ["on-accent", "accent"], ["accent", "bg"], ["accent", "surface"],
+    ["mention-text", "mention-bg"], ["danger", "surface"], ["on-danger", "danger"],
+    ["success", "surface"], ["link", "bg"], ["link", "surface"],
+    ["border-input", "surface", "ui"], ["focus", "bg", "ui"], ["focus", "surface", "ui"]
+  ]
+}

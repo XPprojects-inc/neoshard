@@ -1,0 +1,27 @@
+{
+  "name": "neoshard-dark",
+  "scheme": "dark",
+  "colors": {
+    "bg": "#2d2f34",
+    "bg-rail": "#1c1d21",
+    "surface": "#25272b",
+    "surface-2": "#383a40",
+    "surface-hover": "#3b3e45",
+    "border": "#3c3f46",
+    "border-input": "#70747e",
+    "text": "#eef0f3",
+    "text-muted": "#b4b8c0",
+    "text-faint": "#8f949d",
+    "accent": "#2ec4a6",
+    "accent-hover": "#46d6ba",
+    "on-accent": "#04211b",
+    "mention-bg": "#3d3622",
+    "mention-text": "#f5cf5c",
+    "danger": "#f6656a",
+    "on-danger": "#2a0707",
+    "success": "#3ddc84",
+    "warning": "#f2c94c",
+    "link": "#5fb9ff",
+    "focus": "#5fb9ff"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT DISTINCT b.user_id FROM channel_recipients a JOIN channel_recipients b ON b.channel_id = a.channel_id AND b.user_id <> a.user_id WHERE a.user_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "e6071749214e65e596cebf0436b0898e45a6c9780d1ae099e1124eb023654507"
+}

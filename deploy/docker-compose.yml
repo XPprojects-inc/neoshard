@@ -1,0 +1,144 @@
+# NeoShard — the whole instance on one machine:
+#   cp deploy/.env.example deploy/.env  &&  edit it  &&  docker compose -f deploy/docker-compose.yml up -d
+# Exposes 80/443 (Caddy: web, API, gateway), 7880-7882 + 50000-50100/udp (LiveKit),
+# 3478 udp/tcp + 5349 (coturn; put TURN/TLS on 443 of a second IP if UDP is filtered).
+name: neoshard
+
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  caddy:
+    <<: *restart
+    image: caddy:2-alpine
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      NEOSHARD_DOMAIN: ${NEOSHARD_DOMAIN}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on: [server, web]
+
+  web:
+    <<: *restart
+    build: { context: .., dockerfile: deploy/docker/Dockerfile.web }
+    image: ${NEOSHARD_REGISTRY:-neoshard}/web:${NEOSHARD_VERSION:-latest}
+
+  server:
+    <<: *restart
+    build: { context: .., dockerfile: deploy/docker/Dockerfile.server }
+    image: ${NEOSHARD_REGISTRY:-neoshard}/server:${NEOSHARD_VERSION:-latest}
+    environment:
+      DATABASE_URL: postgres://neoshard:${POSTGRES_PASSWORD}@postgres:5432/neoshard
+      NATS_URL: nats://nats:4222
+      NEOSHARD_PUBLIC_URL: https://${NEOSHARD_DOMAIN}
+      NEOSHARD_DOMAIN: ${NEOSHARD_DOMAIN}
+      NEOSHARD_SECRET_KEY: ${NEOSHARD_SECRET_KEY}
+      NEOSHARD_TRUST_PROXY: "true"
+      NEOSHARD_REGISTRATION_OPEN: ${NEOSHARD_REGISTRATION_OPEN:-true}
+      NEOSHARD_FEDERATION: ${NEOSHARD_FEDERATION:-false}
+      NEOSHARD_FEDERATION_KEY: ${NEOSHARD_FEDERATION_KEY:-}
+      NEOSHARD_SMTP_URL: ${NEOSHARD_SMTP_URL:-}
+      NEOSHARD_SMTP_FROM: ${NEOSHARD_SMTP_FROM:-NeoShard <noreply@localhost>}
+      LIVEKIT_URL: wss://${NEOSHARD_DOMAIN}:7880
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+      NEOSHARD_TURN_URLS: turn:${NEOSHARD_DOMAIN}:3478?transport=udp,turns:${NEOSHARD_DOMAIN}:5349?transport=tcp
+      NEOSHARD_TURN_SECRET: ${TURN_SECRET}
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://minio:9000}
+      S3_BUCKET: ${S3_BUCKET:-neoshard}
+      S3_REGION: ${S3_REGION:-ru-central1}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-neoshard}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-neoshard-minio-secret}
+      S3_PUBLIC_URL: ${S3_PUBLIC_URL:-}
+    depends_on:
+      postgres: { condition: service_healthy }
+      nats: { condition: service_started }
+
+  postgres:
+    <<: *restart
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: neoshard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: neoshard
+    volumes: [pg-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U neoshard"]
+      interval: 5s
+      retries: 20
+
+  valkey:
+    <<: *restart
+    image: valkey/valkey:8-alpine
+    command: ["valkey-server", "--save", "", "--appendonly", "no"]
+
+  nats:
+    <<: *restart
+    image: nats:2-alpine
+    command: ["-js"]
+
+  minio:
+    <<: *restart
+    image: minio/minio:latest
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-neoshard}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-neoshard-minio-secret}
+    volumes: [minio-data:/data]
+    profiles: ["local-s3"]
+
+  livekit:
+    <<: *restart
+    image: livekit/livekit-server:latest
+    command: ["--config", "/etc/livekit.yaml"]
+    environment:
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+    ports: ["7880:7880", "7881:7881", "7882:7882/udp", "50000-50100:50000-50100/udp"]
+    volumes: [./livekit/livekit.yaml:/etc/livekit.yaml:ro]
+
+  coturn:
+    <<: *restart
+    image: coturn/coturn:4
+    network_mode: host
+    command: ["-c", "/etc/coturn/turnserver.conf", "--static-auth-secret=${TURN_SECRET}", "--realm=${NEOSHARD_DOMAIN}"]
+    volumes: [./coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro]
+
+  prometheus:
+    <<: *restart
+    image: prom/prometheus:v3.0.0
+    volumes: [./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro, prom-data:/prometheus]
+    profiles: ["monitoring"]
+
+  grafana:
+    <<: *restart
+    image: grafana/grafana:11.3.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-change-me}
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["127.0.0.1:3000:3000"]
+    profiles: ["monitoring"]
+
+  backup:
+    <<: *restart
+    image: postgres:17-alpine
+    entrypoint: ["/bin/sh", "/backup.sh"]
+    environment:
+      PGHOST: postgres
+      PGUSER: neoshard
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: neoshard
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes: [./backup/backup.sh:/backup.sh:ro, backups:/backups]
+    profiles: ["backup"]
+
+volumes:
+  caddy-data:
+  pg-data:
+  minio-data:
+  prom-data:
+  backups:

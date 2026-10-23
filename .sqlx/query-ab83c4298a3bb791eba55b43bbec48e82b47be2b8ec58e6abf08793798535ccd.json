@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE guilds SET name = COALESCE($2, name), icon = COALESCE($3, icon), tag = COALESCE($4, tag),\n                tag_badge = COALESCE($5, tag_badge), updated_at = now() WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ab83c4298a3bb791eba55b43bbec48e82b47be2b8ec58e6abf08793798535ccd"
+}

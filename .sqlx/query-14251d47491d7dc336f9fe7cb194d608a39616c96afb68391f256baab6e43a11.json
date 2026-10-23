@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO mfa_tickets (token_hash, user_id, device, expires_at) VALUES ($1, $2, $3, now() + interval '5 minutes')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Bytea",
+        "Int8",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "14251d47491d7dc336f9fe7cb194d608a39616c96afb68391f256baab6e43a11"
+}

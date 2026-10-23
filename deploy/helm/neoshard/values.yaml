@@ -1,0 +1,27 @@
+# Bring your own PostgreSQL (e.g. Yandex Managed PostgreSQL), NATS and S3.
+domain: chat.example.ru
+image:
+  server: neoshard/server:0.1.0
+  web: neoshard/web:0.1.0
+  pullPolicy: IfNotPresent
+server:
+  replicas: 2            # gateway nodes coordinate through NATS
+  resources:
+    requests: { cpu: 500m, memory: 512Mi }
+    limits: { memory: 2Gi }
+  # Each replica needs a unique snowflake worker id: derived from the pod ordinal (StatefulSet).
+web:
+  replicas: 2
+secrets:
+  existingSecret: ""     # keys: DATABASE_URL, NEOSHARD_SECRET_KEY, LIVEKIT_API_SECRET, NEOSHARD_TURN_SECRET, S3_ACCESS_KEY, S3_SECRET_KEY
+env:
+  NATS_URL: nats://nats:4222
+  LIVEKIT_URL: wss://media.chat.example.ru
+  LIVEKIT_API_KEY: neoshard
+  S3_ENDPOINT: https://storage.yandexcloud.net
+  S3_BUCKET: neoshard
+  S3_REGION: ru-central1
+  NEOSHARD_REGISTRATION_OPEN: "true"
+ingress:
+  className: nginx
+  tlsSecret: neoshard-tls

@@ -1,0 +1,98 @@
+/* Visual polish and motion (loaded last). Colours only via --ns-* tokens.
+   Every animation here is decorative and switched off for reduced motion. */
+
+/* ---- density and surfaces */
+body { font-size: 16px; line-height: 1.375; }
+.rail { background: var(--ns-bg-rail); padding-top: 12px; gap: 8px; }
+.sidebar { background: var(--ns-surface); }
+.members, .search-panel { background: var(--ns-surface); }
+.main { background: var(--ns-bg); }
+.sidebar-head, .topbar { border-bottom: 0; box-shadow: 0 1px 0 rgb(0 0 0 / .22), 0 1.5px 0 rgb(0 0 0 / .06), 0 2px 0 rgb(0 0 0 / .05); position: relative; z-index: 2; }
+.channels { padding: 8px 8px 8px 8px; }
+.channel { height: 32px; border-radius: 4px; padding: 0 8px; gap: 6px; font-weight: 500; color: var(--ns-text-faint); margin-bottom: 2px; transition: background-color var(--ns-dur-fast), color var(--ns-dur-fast); }
+.channel svg { color: var(--ns-text-faint); flex: none; }
+.channel:hover, .channel[aria-current="page"] { color: var(--ns-text); }
+.channel:hover svg, .channel[aria-current="page"] svg { color: var(--ns-text-muted); }
+.channel[aria-current="page"] { background: color-mix(in srgb, var(--ns-surface-hover) 90%, white 4%); }
+.channel.dm { height: 42px; }
+.category-row { margin-top: 16px; font-size: 12px; color: var(--ns-text-faint); }
+.category-row:hover { color: var(--ns-text-muted); }
+.userbar { height: 54px; background: color-mix(in srgb, var(--ns-bg-rail) 55%, var(--ns-surface)); padding: 0 8px 1px; }
+.composer { padding: 0 16px 24px; }
+.composer-box { background: var(--ns-surface-2); border-radius: 8px; min-height: 44px; padding: 0 8px; }
+.composer textarea { padding: 11px 4px; line-height: 22px; }
+.msg { padding-right: 48px; }
+.msg:hover { background: rgb(0 0 0 / .07); }
+.msg.mention { background: color-mix(in srgb, var(--ns-mention-bg) 70%, transparent); box-shadow: inset 2px 0 0 var(--ns-mention-text); }
+.msg .meta b, .msg .author { font-weight: 600; }
+.msg .meta time { font-size: 12px; }
+.members h3 { font-size: 12px; font-weight: 700; letter-spacing: .02em; margin-top: 20px; color: var(--ns-text-faint); }
+.member { padding: 4px 8px; margin-bottom: 1px; }
+.member:hover { background: var(--ns-surface-hover); }
+.ns-popover { background: var(--ns-bg-rail); border-color: color-mix(in srgb, var(--ns-border) 60%, transparent); }
+.ns-menu-item { color: var(--ns-text-muted); font-weight: 500; }
+.ns-modal { background: var(--ns-bg); border: 1px solid color-mix(in srgb, var(--ns-border) 50%, transparent); }
+.ns-tooltip { background: var(--ns-bg-rail); font-size: 14px; }
+.pcard { background: var(--ns-bg-rail); }
+.pcard-box { background: color-mix(in srgb, var(--ns-surface) 80%, transparent); }
+
+/* ---- thin scrollbars */
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--ns-bg-rail) 70%, black) transparent; }
+.feed { scrollbar-width: auto; scrollbar-color: var(--ns-bg-rail) var(--ns-surface); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--ns-bg-rail); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+.feed::-webkit-scrollbar { width: 14px; }
+.feed::-webkit-scrollbar-thumb { border: 4px solid transparent; background-clip: padding-box; border-radius: 8px; }
+.feed::-webkit-scrollbar-track { background: color-mix(in srgb, var(--ns-surface) 80%, transparent); border: 4px solid transparent; background-clip: padding-box; border-radius: 8px; }
+
+/* ---- motion */
+:root { --ns-spring: cubic-bezier(.34, 1.56, .64, 1); }
+/* server icons: lift and a small spring on press */
+.guild-btn { transition: border-radius var(--ns-dur-base) var(--ns-ease), background-color var(--ns-dur-fast), color var(--ns-dur-fast), transform var(--ns-dur-base) var(--ns-spring); }
+.guild-btn:active { transform: translateY(1px) scale(.96); }
+.guild .pill { transition: transform var(--ns-dur-base) var(--ns-spring); }
+/* unread / mention badges pop in */
+.badge, .mentions, .friends-badge { animation: pop-in var(--ns-dur-base) var(--ns-spring) both; }
+@keyframes pop-in { from { transform: scale(.4); opacity: 0; } }
+/* a new message slides up a little */
+.msg.enter > :not(.day-divider):not(.new-divider) { animation: msg-in 260ms var(--ns-ease) both; }
+@keyframes msg-in { from { opacity: 0; transform: translateY(8px); } }
+/* switching channels: the feed fades in */
+.feed, .friends-body, .settings-content-inner { animation: fade-in 180ms var(--ns-ease) both; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(4px); } }
+/* reactions bump when their count changes (key = count) */
+.reaction { transition: background-color var(--ns-dur-fast), border-color var(--ns-dur-fast), transform var(--ns-dur-fast) var(--ns-spring); }
+.reaction:active { transform: scale(.9); }
+.reaction span { display: inline-block; animation: pop-in 220ms var(--ns-spring); }
+/* list rows cascade in */
+.friend-row, .search-hit, .admin-row, .mutual-row { animation: row-in 240ms var(--ns-ease) both; }
+.friend-row:nth-child(2), .search-hit:nth-child(2), .admin-row:nth-child(2) { animation-delay: 20ms; }
+.friend-row:nth-child(3), .search-hit:nth-child(3), .admin-row:nth-child(3) { animation-delay: 40ms; }
+.friend-row:nth-child(4), .search-hit:nth-child(4), .admin-row:nth-child(4) { animation-delay: 60ms; }
+.friend-row:nth-child(5), .search-hit:nth-child(5), .admin-row:nth-child(5) { animation-delay: 80ms; }
+.friend-row:nth-child(n + 6), .search-hit:nth-child(n + 6), .admin-row:nth-child(n + 6) { animation-delay: 100ms; }
+@keyframes row-in { from { opacity: 0; transform: translateX(-6px); } }
+/* message toolbar slides in on hover */
+.msg .actions { display: flex !important; opacity: 0; transform: translateY(4px); pointer-events: none; transition: opacity var(--ns-dur-fast), transform var(--ns-dur-fast) var(--ns-ease); }
+.msg:hover .actions, .msg:focus-within .actions { opacity: 1; transform: none; pointer-events: auto; }
+/* icon buttons */
+.ns-icon-btn { transition: background-color var(--ns-dur-fast), color var(--ns-dur-fast), transform var(--ns-dur-instant); }
+.ns-icon-btn:active:not(:disabled) { transform: scale(.9); }
+/* typing dots bounce */
+.dots span { animation: dot-bounce 1.2s infinite ease-in-out both; }
+@keyframes dot-bounce { 0%, 80%, 100% { transform: translateY(0); opacity: .35; } 40% { transform: translateY(-3px); opacity: 1; } }
+/* status dot pulse when someone starts speaking in voice */
+.tile.speaking { animation: speak 1.2s ease-in-out infinite alternate; }
+@keyframes speak { from { box-shadow: 0 0 0 2px var(--ns-accent); } to { box-shadow: 0 0 0 4px color-mix(in srgb, var(--ns-accent) 60%, transparent); } }
+/* settings nav item underline glide */
+.settings-nav-item { transition: background-color var(--ns-dur-fast), color var(--ns-dur-fast), padding-left var(--ns-dur-base) var(--ns-ease); }
+.settings-nav-item[aria-current="page"] { padding-left: 14px; }
+/* toasts get a soft spring */
+.ns-toast { border: 1px solid color-mix(in srgb, var(--ns-border) 60%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .badge, .mentions, .friends-badge, .msg.enter > *, .feed, .friends-body, .settings-content-inner, .reaction span,
+  .friend-row, .search-hit, .admin-row, .mutual-row, .dots span, .tile.speaking { animation: none !important; }
+  .msg .actions { transition: none; }
+}

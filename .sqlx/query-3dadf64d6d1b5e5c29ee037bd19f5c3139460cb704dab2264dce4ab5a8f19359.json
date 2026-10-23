@@ -1,0 +1,112 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT u.id, u.username, u.display_name, u.avatar, u.flags, u.bot, u.instance, u.mfa_enabled,\n                  u.avatar_decoration, u.nameplate, u.name_font, u.name_effect, u.name_colors,\n                  g.id AS \"tag_guild_id?\", g.tag AS \"tag?\", g.tag_badge AS \"tag_badge?\"\n           FROM users u\n           LEFT JOIN guilds g ON g.id = u.primary_guild_id AND g.tag <> ''\n                AND EXISTS (SELECT 1 FROM members m WHERE m.guild_id = g.id AND m.user_id = u.id)\n           WHERE u.id = ANY($1)",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "username",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "display_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "avatar",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "flags",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "bot",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "instance",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "mfa_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "avatar_decoration",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "nameplate",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "name_font",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "name_effect",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 12,
+        "name": "name_colors",
+        "type_info": "Int4Array"
+      },
+      {
+        "ordinal": 13,
+        "name": "tag_guild_id?",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 14,
+        "name": "tag?",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 15,
+        "name": "tag_badge?",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8Array"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "3dadf64d6d1b5e5c29ee037bd19f5c3139460cb704dab2264dce4ab5a8f19359"
+}

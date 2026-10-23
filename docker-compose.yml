@@ -1,0 +1,102 @@
+# NeoShard — your own server with one command.
+#
+#   docker compose up -d                                   → http://localhost
+#   NEOSHARD_DOMAIN=chat.example.com docker compose up -d  → https://chat.example.com
+#
+# A standalone server: it does not federate with other servers. Data stays on this
+# machine (Docker volumes), secrets are generated on first start. Ports: 80/443 (site,
+# web client, API), 7880 (voice signalling), 7881/tcp + 7882/udp (voice media).
+# For a domain, point its DNS A record at this machine before starting.
+# The production-scale variant (S3, NATS, TURN, monitoring) is deploy/docker-compose.yml.
+name: neoshard-standalone
+
+x-restart: &restart
+  restart: unless-stopped
+
+x-domain: &domain
+  NEOSHARD_DOMAIN: ${NEOSHARD_DOMAIN:-}
+
+services:
+  secrets:
+    image: alpine:3.20
+    command: ["/bin/sh", "/init-secrets.sh"]
+    volumes:
+      - ./deploy/standalone/init-secrets.sh:/init-secrets.sh:ro
+      - secrets:/secrets
+
+  postgres:
+    <<: *restart
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: neoshard
+      POSTGRES_DB: neoshard
+      POSTGRES_PASSWORD_FILE: /secrets/db_password
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - secrets:/secrets:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U neoshard"]
+      interval: 5s
+      retries: 30
+    depends_on:
+      secrets: { condition: service_completed_successfully }
+
+  server:
+    <<: *restart
+    image: ${NEOSHARD_IMAGES:-ghcr.io/xpprojects-inc}/neoshard-server:${NEOSHARD_VERSION:-latest}
+    build: { context: ., dockerfile: deploy/docker/Dockerfile.server }
+    entrypoint: ["/bin/sh", "/server-entry.sh"]
+    environment:
+      <<: *domain
+      NEOSHARD_HTTP_PORT: ${NEOSHARD_HTTP_PORT:-80}
+      NEOSHARD_TRUST_PROXY: "true"
+      NEOSHARD_REGISTRATION_OPEN: ${NEOSHARD_REGISTRATION_OPEN:-true}
+      NEOSHARD_FEDERATION: "false"
+      NEOSHARD_FILES_DIR: /data/files
+    volumes:
+      - ./deploy/standalone/server-entry.sh:/server-entry.sh:ro
+      - secrets:/secrets:ro
+      - files:/data
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  web:
+    <<: *restart
+    image: ${NEOSHARD_IMAGES:-ghcr.io/xpprojects-inc}/neoshard-web:${NEOSHARD_VERSION:-latest}
+    build: { context: ., dockerfile: deploy/docker/Dockerfile.web }
+
+  livekit:
+    <<: *restart
+    image: livekit/livekit-server:v1.13
+    entrypoint: ["/bin/sh", "/livekit-entry.sh"]
+    environment:
+      <<: *domain
+      NEOSHARD_PUBLIC_IP: ${NEOSHARD_PUBLIC_IP:-}
+    ports: ["7881:7881", "7882:7882/udp"]
+    volumes:
+      - ./deploy/standalone/livekit-entry.sh:/livekit-entry.sh:ro
+      - ./deploy/standalone/livekit.yaml:/etc/livekit.yaml:ro
+      - secrets:/secrets:ro
+    depends_on:
+      secrets: { condition: service_completed_successfully }
+
+  caddy:
+    <<: *restart
+    image: caddy:2-alpine
+    entrypoint: ["/bin/sh", "/caddy-entry.sh"]
+    environment: *domain
+    ports:
+      - "${NEOSHARD_HTTP_PORT:-80}:80"
+      - "443:443"
+      - "7880:7880"
+    volumes:
+      - ./deploy/standalone/caddy-entry.sh:/caddy-entry.sh:ro
+      - ./deploy/standalone/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on: [server, web, livekit]
+
+volumes:
+  secrets:
+  pg-data:
+  files:
+  caddy-data:

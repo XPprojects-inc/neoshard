@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO channels (id, type) VALUES ($1, 7)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8ebdd143229ef8f87baf558efb769e5f3ef7aee8b0de0e966542c9c9a8f0ec7f"
+}

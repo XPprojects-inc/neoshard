@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT EXISTS (SELECT 1 FROM relationships\n                          WHERE kind = 2 AND ((user_id = $1 AND peer_id = $2) OR (user_id = $2 AND peer_id = $1))) AS \"b!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "b!",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "b72974ac7f0b32f097b12f5996dfbcec725f64d840cbc820191cfa546c238e8a"
+}

@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT custom_status, custom_status_emoji, custom_status_expires_at FROM users WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "custom_status",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "custom_status_emoji",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "custom_status_expires_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "095fc24d510b64a7dd7c3d8c154512a6c138062d47b50361a8f9d5106c0098bf"
+}

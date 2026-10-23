@@ -1,0 +1,66 @@
+/* Generated from docs/replica/design/tokens.*.json — edit the JSON, not this file. */
+:root {
+  --ns-bg: #2d2f34;
+  --ns-bg-rail: #1c1d21;
+  --ns-surface: #25272b;
+  --ns-surface-2: #383a40;
+  --ns-surface-hover: #3b3e45;
+  --ns-border: #3c3f46;
+  --ns-border-input: #70747e;
+  --ns-text: #eef0f3;
+  --ns-text-muted: #b4b8c0;
+  --ns-text-faint: #8f949d;
+  --ns-accent: #2ec4a6;
+  --ns-accent-hover: #46d6ba;
+  --ns-on-accent: #04211b;
+  --ns-mention-bg: #3d3622;
+  --ns-mention-text: #f5cf5c;
+  --ns-danger: #f6656a;
+  --ns-on-danger: #2a0707;
+  --ns-success: #3ddc84;
+  --ns-warning: #f2c94c;
+  --ns-link: #5fb9ff;
+  --ns-focus: #5fb9ff;
+  --ns-font-sans: Inter, "Segoe UI Variable", system-ui, -apple-system, Roboto, "Noto Sans", sans-serif;
+  --ns-font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --ns-radius-sm: 6px;
+  --ns-radius-md: 10px;
+  --ns-radius-lg: 16px;
+  --ns-radius-shard: 14px;
+  --ns-shadow-card: 0 1px 2px rgba(0,0,0,.3), 0 1px 1px rgba(0,0,0,.2);
+  --ns-shadow-pop: 0 8px 16px rgba(0,0,0,.24), 0 16px 48px rgba(0,0,0,.36);
+  --ns-dur-instant: 80ms;
+  --ns-dur-fast: 120ms;
+  --ns-dur-base: 200ms;
+  --ns-ease: cubic-bezier(.2,.8,.2,1);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --ns-bg: #ffffff;
+    --ns-bg-rail: #e9edf2;
+    --ns-surface: #f5f7fa;
+    --ns-surface-2: #edf1f5;
+    --ns-surface-hover: #e3e8ee;
+    --ns-border: #d9dfe6;
+    --ns-border-input: #7a8594;
+    --ns-text: #121820;
+    --ns-text-muted: #4f5a68;
+    --ns-text-faint: #6b7685;
+    --ns-accent: #0a6e5c;
+    --ns-accent-hover: #085a4b;
+    --ns-on-accent: #ffffff;
+    --ns-mention-bg: #fff4d1;
+    --ns-mention-text: #6b4b00;
+    --ns-danger: #c22f2f;
+    --ns-on-danger: #ffffff;
+    --ns-success: #167a46;
+    --ns-warning: #8a6100;
+    --ns-link: #1f63c6;
+    --ns-focus: #1f63c6;
+    color-scheme: light;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --ns-dur-instant: 0ms; --ns-dur-fast: 0ms; --ns-dur-base: 0ms; }
+}

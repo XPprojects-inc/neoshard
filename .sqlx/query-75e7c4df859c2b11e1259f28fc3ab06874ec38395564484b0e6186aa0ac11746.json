@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT EXISTS (SELECT 1 FROM members a JOIN members b ON a.guild_id = b.guild_id\n                          WHERE a.user_id = $1 AND b.user_id = $2)\n               OR EXISTS (SELECT 1 FROM channel_recipients a JOIN channel_recipients b ON a.channel_id = b.channel_id\n                          WHERE a.user_id = $1 AND b.user_id = $2)\n               OR EXISTS (SELECT 1 FROM relationships WHERE user_id = $1 AND peer_id = $2 AND kind IN (1, 3, 4)) AS \"ok!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "ok!",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "75e7c4df859c2b11e1259f28fc3ab06874ec38395564484b0e6186aa0ac11746"
+}

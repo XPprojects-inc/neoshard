@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: neoshard-gateway
+    metrics_path: /gateway/metrics
+    static_configs: [{ targets: ["server:8080"] }]
+  - job_name: livekit
+    static_configs: [{ targets: ["livekit:6789"] }]

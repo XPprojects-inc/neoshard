@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM permission_overwrites WHERE target_id = $1 AND target_type = 0",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8d5d8971fba9026aec6b947b7b46a63e781f4bea90ec2847b6fb4f180e9f5613"
+}

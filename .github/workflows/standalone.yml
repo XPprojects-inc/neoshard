@@ -1,0 +1,74 @@
+# The one-command server (docker-compose.yml): builds both images on a clean machine,
+# starts the stack with `docker compose up` and checks it end to end over HTTP.
+# On main, the images are published to GHCR so `docker compose up` can pull them.
+name: standalone
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      NEOSHARD_IMAGES: ghcr.io/${{ github.repository_owner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lowercase image namespace
+        run: echo "NEOSHARD_IMAGES=${NEOSHARD_IMAGES,,}" >> "$GITHUB_ENV"
+      - uses: docker/setup-buildx-action@v3
+      - name: Build images
+        run: docker compose build server web
+      - name: Start the stack (one command)
+        run: docker compose up -d
+      - name: Wait for the server
+        run: |
+          for i in $(seq 1 60); do
+            curl -fsS http://localhost/healthz && exit 0
+            sleep 2
+          done
+          docker compose ps; docker compose logs --tail 80; exit 1
+      - name: Smoke test over HTTP
+        run: |
+          set -euo pipefail
+          api=http://localhost/api/v1
+          # landing site, web client, invite redirect, discovery document
+          curl -fsS http://localhost/ | grep -q 'NeoShard'
+          curl -fsS http://localhost/app/ | grep -q '/app/assets/'
+          test "$(curl -s -o /dev/null -w '%{redirect_url}' http://localhost/invite/AbC123)" = "http://localhost/app/?invite=AbC123"
+          curl -fsS http://localhost/.well-known/neoshard | grep -q '"gateway"'
+          # register, create a server, post a message, read it back
+          tok=$(curl -fsS -X POST $api/auth/register -H 'content-type: application/json' \
+            -d '{"username":"smoke","password":"smoke-test-password-1","email":"smoke@example.com"}' | jq -r .token)
+          gid=$(curl -fsS -X POST $api/guilds -H "authorization: Bearer $tok" -H 'content-type: application/json' \
+            -d '{"name":"Smoke"}' | jq -r .id)
+          cid=$(curl -fsS $api/guilds/$gid/channels -H "authorization: Bearer $tok" | jq -r '[.[] | select(.type=="CHANNEL_TYPE_TEXT")][0].id')
+          curl -fsS -X POST $api/channels/$cid/messages -H "authorization: Bearer $tok" -H 'content-type: application/json' \
+            -d '{"content":"hello from CI"}' > /dev/null
+          curl -fsS "$api/channels/$cid/messages?limit=5" -H "authorization: Bearer $tok" | grep -q 'hello from CI'
+          # voice: a token for the voice channel and LiveKit answering through Caddy
+          vid=$(curl -fsS $api/guilds/$gid/channels -H "authorization: Bearer $tok" | jq -r '[.[] | select(.type=="CHANNEL_TYPE_VOICE")][0].id')
+          curl -fsS -X POST $api/channels/$vid/voice -H "authorization: Bearer $tok" -H 'content-type: application/json' -d '{}' | jq -e .token > /dev/null
+          curl -fsS http://localhost:7880/ > /dev/null
+          echo "standalone stack works"
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --tail 200
+      - name: Publish images
+        if: github.event_name == 'push'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker compose push server web
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            for s in server web; do
+              docker tag "$NEOSHARD_IMAGES/neoshard-$s:latest" "$NEOSHARD_IMAGES/neoshard-$s:${GITHUB_REF_NAME#v}"
+              docker push "$NEOSHARD_IMAGES/neoshard-$s:${GITHUB_REF_NAME#v}"
+            done
+          fi

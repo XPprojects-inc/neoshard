@@ -1,0 +1,18 @@
+[package]
+name = "neoshard-media-auth"
+description = "Issues LiveKit access tokens and TURN credentials based on NeoShard permissions."
+license = "AGPL-3.0-or-later"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+neoshard-proto.workspace = true
+jsonwebtoken.workspace = true
+serde.workspace = true
+hmac.workspace = true
+sha1 = "0.10"
+base64.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

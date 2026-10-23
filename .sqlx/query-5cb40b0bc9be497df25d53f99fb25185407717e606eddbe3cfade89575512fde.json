@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE messages SET thread_id = $3 WHERE channel_id = $1 AND id = $2 AND thread_id IS NULL",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "5cb40b0bc9be497df25d53f99fb25185407717e606eddbe3cfade89575512fde"
+}

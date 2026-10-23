@@ -1,0 +1,307 @@
+// NeoShard protocol v1 — core data models.
+// SPDX-License-Identifier: CC-BY-4.0
+//
+// Compatibility policy (spec/COMPATIBILITY.md): within v1 fields and enum values
+// are only ever ADDED. Field numbers are never reused. Clients MUST ignore
+// unknown fields and unknown oneof variants.
+//
+// All IDs are Snowflakes (uint64). In JSON (REST) they are encoded as strings,
+// per the canonical proto3 JSON mapping.
+syntax = "proto3";
+
+package neoshard.v1;
+
+message User {
+  uint64 id = 1;
+  string username = 2;
+  string display_name = 3;
+  string avatar = 4;          // content hash in object storage, empty = default
+  uint64 flags = 5;           // UserFlags bitset
+  bool bot = 6;
+  string instance = 7;        // empty = local instance, otherwise federated origin
+  bool mfa_enabled = 8;       // only present for the user themself
+  // Compact profile cosmetics shown wherever the user appears (ADR-0020).
+  // Ids come from the catalog in spec/profile-catalog.md; empty = none.
+  string avatar_decoration = 9;
+  string nameplate = 10;
+  NameStyle name_style = 11;
+  GuildTag guild_tag = 12;    // the server tag the user chose to display
+}
+
+enum RelationshipKind {
+  RELATIONSHIP_KIND_NONE = 0;
+  RELATIONSHIP_KIND_FRIEND = 1;
+  RELATIONSHIP_KIND_BLOCKED = 2;    // the viewer blocked this user
+  RELATIONSHIP_KIND_INCOMING = 3;   // they sent the viewer a friend request
+  RELATIONSHIP_KIND_OUTGOING = 4;   // the viewer sent them a friend request
+}
+
+// The viewer's relationship with another user (ADR-0021).
+message Relationship {
+  User user = 1;
+  RelationshipKind kind = 2;
+  int64 since = 3;                  // unix millis
+}
+
+message NameStyle {
+  string font = 1;            // "" = default
+  string effect = 2;          // "" = plain
+  repeated uint32 colors = 3; // 0xRRGGBB, at most 2
+}
+
+message GuildTag {
+  uint64 guild_id = 1;
+  string tag = 2;             // 1-4 characters
+  string badge = 3;           // catalog id
+}
+
+// Full profile, fetched on demand (GET /users/{id}/profile).
+message UserProfile {
+  User user = 1;
+  string pronouns = 2;
+  string bio = 3;                       // markdown, ≤ 190 characters
+  string banner = 4;                    // URL, empty = none
+  optional uint32 banner_color = 5;     // used when there is no banner image
+  repeated uint32 theme_colors = 6;     // [primary, accent] or empty
+  string profile_effect = 7;
+  int64 created_at = 8;                 // unix millis
+  repeated ProfileLink links = 9;
+  MemberProfile member = 10;            // when requested with ?guild_id=
+  repeated uint64 mutual_guild_ids = 11;
+  string note = 12;                     // the viewer's private note
+  repeated uint64 mutual_friend_ids = 13;
+  RelationshipKind relationship = 14;   // viewer → this user
+}
+
+message MemberProfile {
+  uint64 guild_id = 1;
+  string nick = 2;
+  string avatar = 3;
+  string banner = 4;
+  string bio = 5;
+  string pronouns = 6;
+  repeated uint32 theme_colors = 7;
+  repeated uint64 role_ids = 8;
+  int64 joined_at = 9;
+}
+
+message ProfileLink {
+  string label = 1;
+  string url = 2;
+  bool verified = 3;          // the page links back with rel="me"
+}
+
+enum ChannelType {
+  CHANNEL_TYPE_UNSPECIFIED = 0;
+  CHANNEL_TYPE_TEXT = 1;
+  CHANNEL_TYPE_VOICE = 2;
+  CHANNEL_TYPE_CATEGORY = 3;
+  CHANNEL_TYPE_ANNOUNCEMENT = 4;
+  CHANNEL_TYPE_FORUM = 5;
+  CHANNEL_TYPE_THREAD = 6;
+  CHANNEL_TYPE_DM = 7;
+  CHANNEL_TYPE_GROUP_DM = 8;
+}
+
+enum OverwriteType {
+  OVERWRITE_TYPE_ROLE = 0;
+  OVERWRITE_TYPE_MEMBER = 1;
+}
+
+message PermissionOverwrite {
+  uint64 id = 1;              // role id or user id
+  OverwriteType type = 2;
+  uint64 allow = 3;
+  uint64 deny = 4;
+}
+
+message Channel {
+  uint64 id = 1;
+  uint64 guild_id = 2;        // 0 for DMs
+  ChannelType type = 3;
+  string name = 4;
+  string topic = 5;
+  int32 position = 6;
+  uint64 parent_id = 7;       // category, or parent channel for threads
+  bool nsfw = 8;
+  uint32 slowmode_seconds = 9;
+  repeated PermissionOverwrite overwrites = 10;
+  uint64 last_message_id = 11;
+  repeated uint64 recipient_ids = 12;   // DMs / group DMs
+  bool e2ee = 13;                       // MLS-encrypted channel
+  uint64 owner_id = 14;                 // group DM / thread owner
+  repeated ForumTag forum_tags = 15;
+  bool archived = 16;                   // threads
+}
+
+message ForumTag {
+  uint64 id = 1;
+  string name = 2;
+  string emoji = 3;
+}
+
+message Role {
+  uint64 id = 1;              // @everyone role id == guild id
+  uint64 guild_id = 2;
+  string name = 3;
+  uint32 color = 4;           // 0xRRGGBB, 0 = none
+  int32 position = 5;         // higher = more powerful; @everyone = 0
+  uint64 permissions = 6;
+  bool hoist = 7;
+  bool mentionable = 8;
+}
+
+message Member {
+  uint64 guild_id = 1;
+  User user = 2;
+  string nick = 3;
+  repeated uint64 role_ids = 4;
+  int64 joined_at = 5;                  // unix millis
+  int64 timeout_until = 6;              // unix millis, 0 = none
+  string avatar = 7;                    // per-server avatar URL, empty = user avatar
+}
+
+message Emoji {
+  uint64 id = 1;
+  uint64 guild_id = 2;
+  string name = 3;
+  bool animated = 4;
+  string key = 5;             // object key of the image (files_base + "/" + key)
+}
+
+message Sticker {
+  uint64 id = 1;
+  uint64 guild_id = 2;
+  string name = 3;
+  string format = 4;          // "png" | "apng" | "webp" | "lottie"
+  string key = 5;             // object key of the image (files_base + "/" + key)
+}
+
+message Guild {
+  uint64 id = 1;
+  string name = 2;
+  string icon = 3;
+  uint64 owner_id = 4;
+  repeated Channel channels = 5;
+  repeated Role roles = 6;
+  repeated Emoji emojis = 7;
+  repeated Sticker stickers = 8;
+  uint32 member_count = 9;
+  Member self_member = 10;    // the connecting user's membership
+  string instance = 11;       // federation: home instance, empty = local
+  repeated VoiceState voice_states = 12;   // only in Ready / guild_create
+  string tag = 13;                          // server tag members can display, empty = none
+  string tag_badge = 14;
+}
+
+message Attachment {
+  uint64 id = 1;
+  string filename = 2;
+  string content_type = 3;
+  uint64 size = 4;
+  string url = 5;
+  uint32 width = 6;
+  uint32 height = 7;
+}
+
+message Embed {
+  string url = 1;
+  string title = 2;
+  string description = 3;
+  string site_name = 4;
+  string image_url = 5;
+  uint32 color = 6;
+}
+
+message ReactionCount {
+  string emoji = 1;           // unicode emoji, or "name:id" for custom
+  uint32 count = 2;
+  bool me = 3;
+}
+
+enum MessageKind {
+  MESSAGE_KIND_DEFAULT = 0;
+  MESSAGE_KIND_REPLY = 1;
+  MESSAGE_KIND_MEMBER_JOIN = 2;
+  MESSAGE_KIND_THREAD_CREATED = 3;
+  MESSAGE_KIND_PIN_NOTICE = 4;
+  MESSAGE_KIND_SLASH_COMMAND = 5;
+}
+
+message Message {
+  uint64 id = 1;
+  uint64 channel_id = 2;
+  uint64 guild_id = 3;
+  User author = 4;
+  string content = 5;                    // Markdown source
+  int64 edited_at = 6;                   // unix millis, 0 = never
+  uint64 reply_to_id = 7;
+  repeated Attachment attachments = 8;
+  repeated Embed embeds = 9;
+  repeated uint64 mention_user_ids = 10;
+  repeated uint64 mention_role_ids = 11;
+  bool mention_everyone = 12;
+  bool pinned = 13;
+  repeated ReactionCount reactions = 14;
+  MessageKind kind = 15;
+  string nonce = 16;                     // client-supplied idempotency key, echoed back
+  uint64 webhook_id = 17;
+  bytes e2ee_payload = 18;               // MLS ciphertext; content is empty when set
+  uint64 sticker_id = 19;
+  uint64 thread_id = 20;                 // thread started from this message
+}
+
+enum Status {
+  STATUS_OFFLINE = 0;
+  STATUS_ONLINE = 1;
+  STATUS_IDLE = 2;
+  STATUS_DND = 3;
+  STATUS_INVISIBLE = 4;      // only ever sent to the user themself
+}
+
+message Presence {
+  uint64 user_id = 1;
+  Status status = 2;
+  string custom_status = 3;
+  string custom_emoji = 4;      // unicode emoji or :name:
+  int64 custom_expires_at = 5;  // unix millis, 0 = never
+}
+
+message VoiceState {
+  uint64 guild_id = 1;
+  uint64 channel_id = 2;                 // 0 = disconnected
+  uint64 user_id = 3;
+  bool self_mute = 4;
+  bool self_deaf = 5;
+  bool server_mute = 6;
+  bool server_deaf = 7;
+  bool video = 8;
+  bool streaming = 9;
+}
+
+message ReadState {
+  uint64 channel_id = 1;
+  uint64 last_read_message_id = 2;
+  uint32 mention_count = 3;
+}
+
+message AuditLogEntry {
+  uint64 id = 1;
+  uint64 guild_id = 2;
+  uint64 user_id = 3;
+  string action = 4;          // e.g. "member.ban", "role.update"
+  uint64 target_id = 5;
+  string changes_json = 6;
+  string reason = 7;
+}
+
+message Invite {
+  string code = 1;
+  uint64 guild_id = 2;
+  uint64 channel_id = 3;
+  uint64 inviter_id = 4;
+  uint32 max_uses = 5;        // 0 = unlimited
+  uint32 uses = 6;
+  int64 expires_at = 7;       // unix millis, 0 = never
+  string guild_name = 8;
+}

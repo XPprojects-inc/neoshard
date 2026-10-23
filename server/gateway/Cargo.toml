@@ -1,0 +1,24 @@
+[package]
+name = "neoshard-gateway"
+description = "NeoShard realtime Gateway: WebSocket, protobuf + zstd, resume, permission-filtered fan-out."
+license = "AGPL-3.0-or-later"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+neoshard-proto = { workspace = true, features = ["zstd-native"] }
+neoshard-server-common.workspace = true
+neoshard-presence.workspace = true
+axum.workspace = true
+tokio.workspace = true
+futures-util.workspace = true
+dashmap.workspace = true
+sqlx.workspace = true
+chrono.workspace = true
+tracing.workspace = true
+serde.workspace = true
+rand.workspace = true
+base64.workspace = true
+anyhow.workspace = true
+parking_lot.workspace = true

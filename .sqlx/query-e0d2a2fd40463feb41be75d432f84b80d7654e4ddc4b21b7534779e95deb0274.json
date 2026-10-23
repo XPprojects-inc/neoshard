@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE messages SET\n            content = COALESCE($3, content),\n            e2ee_payload = COALESCE($4, e2ee_payload),\n            edited_at = CASE WHEN $3::text IS NOT NULL OR $4::bytea IS NOT NULL THEN now() ELSE edited_at END,\n            mention_everyone = CASE WHEN $3::text IS NOT NULL THEN $5 ELSE mention_everyone END,\n            mention_user_ids = CASE WHEN $3::text IS NOT NULL THEN $6 ELSE mention_user_ids END,\n            mention_role_ids = CASE WHEN $3::text IS NOT NULL THEN $7 ELSE mention_role_ids END,\n            embeds = CASE WHEN $8 THEN '[]'::jsonb ELSE embeds END\n         WHERE channel_id = $1 AND id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text",
+        "Bytea",
+        "Bool",
+        "Int8Array",
+        "Int8Array",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e0d2a2fd40463feb41be75d432f84b80d7654e4ddc4b21b7534779e95deb0274"
+}

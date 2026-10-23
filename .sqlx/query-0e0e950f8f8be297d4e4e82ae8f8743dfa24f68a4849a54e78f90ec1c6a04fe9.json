@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE user_links SET verified_at = now() WHERE user_id = $1 AND position = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int2"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "0e0e950f8f8be297d4e4e82ae8f8743dfa24f68a4849a54e78f90ec1c6a04fe9"
+}

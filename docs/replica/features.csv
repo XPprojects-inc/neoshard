@@ -1,0 +1,65 @@
+feature,area,priority,original,clone,notes
+register,accounts,must,yes,yes,
+login,accounts,must,yes,yes,
+totp_2fa,accounts,must,yes,yes,
+backup_codes,accounts,should,yes,yes,
+multi_device_sessions,accounts,must,yes,yes,
+session_revoke,accounts,must,yes,yes,
+password_recovery,accounts,must,yes,partial,API + email via own SMTP; not tested end-to-end (no SMTP here)
+guild_create,guilds,must,yes,yes,
+guild_delete,guilds,must,yes,yes,
+text_channels,guilds,must,yes,yes,
+voice_channels,guilds,must,yes,yes,"tokens/grants/voice states tested; media path tested against LiveKit 1.13.10 (tests/media)"
+categories,guilds,must,yes,yes,
+forum_channels,guilds,should,yes,yes,
+threads,guilds,should,yes,yes,
+announcement_channels,guilds,should,yes,partial,"follow + crosspost implemented, not covered by e2e test"
+roles,permissions,must,yes,yes,
+permission_bitmask,permissions,must,yes,yes,
+channel_overwrites,permissions,must,yes,yes,
+invites,guilds,must,yes,yes,"links open the join dialog (/invite/CODE), copy with execCommand fallback, share sheet on phones"
+ban,moderation,must,yes,yes,
+kick,moderation,must,yes,yes,
+timeout,moderation,must,yes,yes,
+audit_log,moderation,must,yes,yes,
+automod,moderation,should,yes,yes,
+markdown,messages,must,yes,yes,
+mentions,messages,must,yes,yes,
+reactions,messages,must,yes,yes,
+replies,messages,must,yes,yes,
+edit_delete,messages,must,yes,yes,
+pins,messages,must,yes,yes,
+attachments,messages,must,yes,yes,"upload button, drag & drop, paste, progress, image grid + viewer, file cards; local storage tested end to end (S3 path unchanged, not tested against real S3)"
+link_previews,messages,should,yes,yes,
+custom_emoji,messages,should,yes,yes,"upload in server settings, picker tab in the composer, :name: rendered in messages"
+stickers,messages,could,yes,yes,"upload in server settings, picker tab, rendering (images; no Lottie)"
+search,messages,must,yes,yes,"search box with from:/in:/has: filters, results panel, jump to message"
+dms,dms,must,yes,yes,
+group_dms,dms,must,yes,yes,"create dialog (up to 10 people, optional E2EE)"
+e2ee_mls,dms,must,no,yes,"encrypted DMs end to end in core (live test + two browsers), keys persisted; adding devices to existing groups is not done"
+presence,realtime,must,yes,yes,
+custom_status,realtime,should,yes,yes,
+typing,realtime,must,yes,yes,
+unread_mentions,realtime,must,yes,yes,
+push_notifications,realtime,should,yes,partial,subscriptions stored; Web Push sending not implemented
+gateway_resume,realtime,must,yes,yes,
+voice,media,must,yes,yes,"real LiveKit: audio reaches the other participant (RMS check), web client plays it"
+video,media,must,yes,yes,"real LiveKit: camera frames received (Node SDK and web client)"
+screen_share,media,must,yes,yes,"real LiveKit: screen share received; without STREAM LiveKit rejects it (NOT_ALLOWED)"
+noise_suppression,media,should,yes,partial,"RNNoise in core (−37 dB on background noise, tested); not wired into the web capture path"
+bots_api,platform,must,yes,yes,
+webhooks,platform,must,yes,yes,
+slash_commands,platform,must,yes,yes,
+federation,platform,must,no,partial,federated identities + DMs between instances (tested); guild federation not yet
+custom_server_endpoint,platform,must,no,yes,NeoShard extra
+themes,client,must,partial,yes,
+client_plugins,client,should,no,yes,NeoShard extra
+offline_cache,client,must,partial,yes,
+nitro,monetization,skip,yes,skip,not our model
+activities,media,skip,yes,skip,partner integrations
+game_rich_presence,realtime,skip,yes,skip,proprietary SDK
+discovery,guilds,should,yes,yes,"public servers on one instance: search by name (Unicode case-insensitive), join without invite (ADR-0022); no cross-instance directory"
+profile_customization,users,must,yes,yes,"bio, pronouns, banner/colour, two-colour theme, avatar frames, profile effects, nameplates, name styles, server tag, per-server profiles, notes, verified links (rel=me); own SVG/CSS art, all free"
+friends,users,must,yes,yes,"add by username without a shared server, pending/blocked lists, presence and DMs between friends, blocks (ADR-0021)"
+mobile_apps,client,must,yes,partial,"Android APK (Tauri 2, native core, Material layout) builds and launches in emulator; login on device not verified; no iOS build"
+desktop_app,client,must,yes,yes,"Windows NSIS installer 3.6 MB, native core"

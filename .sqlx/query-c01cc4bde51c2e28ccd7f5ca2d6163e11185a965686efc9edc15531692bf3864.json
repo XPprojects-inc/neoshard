@@ -1,0 +1,55 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, user_id, action, target_id, changes, reason FROM audit_log\n         WHERE guild_id = $1 AND id < $2 AND ($3::text IS NULL OR action = $3)\n         ORDER BY id DESC LIMIT $4",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "action",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "target_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "changes",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 5,
+        "name": "reason",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "c01cc4bde51c2e28ccd7f5ca2d6163e11185a965686efc9edc15531692bf3864"
+}

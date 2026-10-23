@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "NeoShard",
+  "version": "0.1.5",
+  "identifier": "ru.neoshard.app",
+  "build": {
+    "frontendDist": "../../web/dist",
+    "beforeBuildCommand": "npm run build -w @neoshard/web"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "NeoShard"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; media-src 'self' https: blob:; connect-src 'self' ipc: http://ipc.localhost https: wss:; frame-src 'self'; object-src 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "icon": [
+      "icons/icon.png"
+    ],
+    "category": "SocialNetworking",
+    "shortDescription": "Открытый мессенджер для сообществ"
+  }
+}

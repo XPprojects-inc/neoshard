@@ -1,0 +1,36 @@
+[package]
+name = "neoshard-server"
+description = "NeoShard server binary: REST API, Gateway, presence and media-auth in one process."
+license = "AGPL-3.0-or-later"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[features]
+default = []
+nats = ["neoshard-server-common/nats"]
+
+[dependencies]
+mimalloc = { version = "0.1", default-features = false }
+neoshard-proto.workspace = true
+neoshard-server-common.workspace = true
+neoshard-api.workspace = true
+neoshard-gateway.workspace = true
+neoshard-presence.workspace = true
+axum.workspace = true
+tokio.workspace = true
+tower-http.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+clap.workspace = true
+anyhow.workspace = true
+sqlx.workspace = true
+
+[dev-dependencies]
+reqwest.workspace = true
+serde_json.workspace = true
+tokio-tungstenite.workspace = true
+futures-util.workspace = true
+prost.workspace = true
+neoshard-federation.workspace = true
+chrono.workspace = true

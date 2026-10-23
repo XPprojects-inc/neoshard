@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE users SET mfa_enabled = TRUE, updated_at = now() WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "cfd48f29df7c3dc7f5fb40c630c2d61a54aa2142f91e5cd8c8c9e82c35024a23"
+}

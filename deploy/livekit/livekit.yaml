@@ -1,0 +1,14 @@
+port: 7880
+rtc:
+  tcp_port: 7881
+  udp_port: 7882
+  port_range_start: 50000
+  port_range_end: 50100
+  use_external_ip: true
+# LiveKit's embedded TURN/TLS on 443 helps restrictive networks (enable with a cert):
+turn:
+  enabled: false
+  # domain: turn.chat.example.ru
+  # tls_port: 5349
+logging:
+  level: info

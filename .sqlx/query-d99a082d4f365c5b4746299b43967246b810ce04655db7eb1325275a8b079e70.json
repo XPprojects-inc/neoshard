@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE mfa_tickets SET attempts = attempts + 1\n         WHERE token_hash = $1 AND expires_at > now() AND attempts < 5\n         RETURNING user_id, device",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "device",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bytea"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "d99a082d4f365c5b4746299b43967246b810ce04655db7eb1325275a8b079e70"
+}

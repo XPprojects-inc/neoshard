@@ -1,0 +1,135 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT channel_id, id, guild_id, author_id, content, kind, reply_to_id, edited_at, pinned, mention_everyone,\n                mention_user_ids, mention_role_ids, attachments, embeds, nonce, webhook_id, sticker_id, thread_id, e2ee_payload\n         FROM messages\n         WHERE channel_id = ANY($1)\n           AND ($2 = '' OR tsv @@ websearch_to_tsquery('simple', $2))\n           AND ($3::bigint IS NULL OR author_id = $3)\n           AND ($4 <> 'attachment' OR attachments <> '[]'::jsonb)\n           AND ($4 <> 'link' OR content ~ 'https?://')\n           AND ($4 <> 'pinned' OR pinned)\n         ORDER BY id DESC OFFSET $5 LIMIT $6",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "channel_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "guild_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "author_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "kind",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 6,
+        "name": "reply_to_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 7,
+        "name": "edited_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "pinned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 9,
+        "name": "mention_everyone",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 10,
+        "name": "mention_user_ids",
+        "type_info": "Int8Array"
+      },
+      {
+        "ordinal": 11,
+        "name": "mention_role_ids",
+        "type_info": "Int8Array"
+      },
+      {
+        "ordinal": 12,
+        "name": "attachments",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 13,
+        "name": "embeds",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 14,
+        "name": "nonce",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 15,
+        "name": "webhook_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 16,
+        "name": "sticker_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 17,
+        "name": "thread_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 18,
+        "name": "e2ee_payload",
+        "type_info": "Bytea"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8Array",
+        "Text",
+        "Int8",
+        "Text",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "d079b38a23f7c4ab901acaab0ec49426b273039f238bdc6aa28e0ac11c2c0530"
+}

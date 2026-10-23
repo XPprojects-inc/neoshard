@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO relationships (user_id, peer_id, kind) VALUES ($1, $2, $3)\n         ON CONFLICT (user_id, peer_id) DO UPDATE SET kind = EXCLUDED.kind, created_at = now()",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int2"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "233afaca609b64149f1427e7e32258ebf4ec33316c259638411026c9798ca4c8"
+}

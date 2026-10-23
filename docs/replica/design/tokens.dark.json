@@ -1,0 +1,181 @@
+{
+  "_about": "NeoShard dark theme (default): neutral graphite surfaces, NeoShard teal accent. The previous blue-black palette ships as the 'neoshard-midnight' theme.",
+  "color": {
+    "bg": "#2d2f34",
+    "bg-rail": "#1c1d21",
+    "surface": "#25272b",
+    "surface-2": "#383a40",
+    "surface-hover": "#3b3e45",
+    "border": "#3c3f46",
+    "border-input": "#70747e",
+    "text": "#eef0f3",
+    "text-muted": "#b4b8c0",
+    "text-faint": "#8f949d",
+    "accent": "#2ec4a6",
+    "accent-hover": "#46d6ba",
+    "on-accent": "#04211b",
+    "mention-bg": "#3d3622",
+    "mention-text": "#f5cf5c",
+    "danger": "#f6656a",
+    "on-danger": "#2a0707",
+    "success": "#3ddc84",
+    "warning": "#f2c94c",
+    "link": "#5fb9ff",
+    "focus": "#5fb9ff"
+  },
+  "pairs": [
+    [
+      "text",
+      "bg"
+    ],
+    [
+      "text",
+      "surface"
+    ],
+    [
+      "text",
+      "surface-2"
+    ],
+    [
+      "text",
+      "surface-hover"
+    ],
+    [
+      "text",
+      "bg-rail"
+    ],
+    [
+      "text-muted",
+      "bg"
+    ],
+    [
+      "text-muted",
+      "surface"
+    ],
+    [
+      "text-muted",
+      "surface-2"
+    ],
+    [
+      "text-faint",
+      "surface",
+      "large"
+    ],
+    [
+      "on-accent",
+      "accent"
+    ],
+    [
+      "accent",
+      "bg"
+    ],
+    [
+      "accent",
+      "surface"
+    ],
+    [
+      "mention-text",
+      "mention-bg"
+    ],
+    [
+      "danger",
+      "surface"
+    ],
+    [
+      "on-danger",
+      "danger"
+    ],
+    [
+      "success",
+      "surface"
+    ],
+    [
+      "link",
+      "bg"
+    ],
+    [
+      "link",
+      "surface"
+    ],
+    [
+      "border-input",
+      "surface",
+      "ui"
+    ],
+    [
+      "focus",
+      "bg",
+      "ui"
+    ],
+    [
+      "focus",
+      "surface",
+      "ui"
+    ]
+  ],
+  "font": {
+    "sans": "Inter, \"Segoe UI Variable\", system-ui, -apple-system, Roboto, \"Noto Sans\", sans-serif",
+    "mono": "\"JetBrains Mono\", ui-monospace, \"Cascadia Code\", Consolas, monospace"
+  },
+  "type": {
+    "xs": {
+      "size": 12,
+      "line": 16,
+      "weight": 500
+    },
+    "sm": {
+      "size": 14,
+      "line": 20,
+      "weight": 400
+    },
+    "base": {
+      "size": 15,
+      "line": 22,
+      "weight": 400
+    },
+    "lg": {
+      "size": 18,
+      "line": 24,
+      "weight": 600
+    },
+    "xl": {
+      "size": 24,
+      "line": 30,
+      "weight": 700
+    },
+    "display": {
+      "size": 32,
+      "line": 38,
+      "weight": 800
+    }
+  },
+  "space": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64
+  ],
+  "radius": {
+    "sm": 6,
+    "md": 10,
+    "lg": 16,
+    "shard": 14,
+    "pill": 999
+  },
+  "shadow": {
+    "card": "0 1px 2px rgba(0,0,0,.4)",
+    "pop": "0 16px 40px rgba(0,0,0,.45)"
+  },
+  "motion": {
+    "instant": "80ms",
+    "fast": "120ms",
+    "base": "200ms",
+    "slow": "320ms",
+    "ease": "cubic-bezier(.2,.8,.2,1)"
+  }
+}

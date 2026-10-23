@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT EXISTS(SELECT 1 FROM bans WHERE guild_id = $1 AND user_id = $2) AS \"b!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "b!",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "076528e9907b50dae68e7cbcd141a2594b6e6adc11842bb2da7b4e0742f80ebe"
+}

@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT discoverable, discovery_description FROM guilds WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "discoverable",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 1,
+        "name": "discovery_description",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "98fa793261bd0c8d21972ec618b9163b816dc986e52097f725cbe0117f8d38a1"
+}

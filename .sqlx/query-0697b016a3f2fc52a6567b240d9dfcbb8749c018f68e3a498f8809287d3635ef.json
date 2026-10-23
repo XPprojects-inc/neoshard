@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO user_notes (owner_id, target_id, note) VALUES ($1, $2, $3)\n             ON CONFLICT (owner_id, target_id) DO UPDATE SET note = EXCLUDED.note, updated_at = now()",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "0697b016a3f2fc52a6567b240d9dfcbb8749c018f68e3a498f8809287d3635ef"
+}

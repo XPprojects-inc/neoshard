@@ -1,0 +1,235 @@
+// NeoShard protocol v1 — realtime Gateway.
+// SPDX-License-Identifier: CC-BY-4.0
+//
+// Transport: WebSocket, binary frames only. URL: {gateway}/gateway?v=1[&compress=zstd]
+// With compress=zstd every frame (both directions) is an independent zstd frame.
+// Each WebSocket message carries exactly one GatewayFrame.
+//
+// Session lifecycle — see spec/gateway.md:
+//   S->C Hello → C->S Identify|Resume → S->C Ready|Resumed → dispatch...
+//   C->S Heartbeat{last_seq} every heartbeat_interval_ms (first one after interval*jitter)
+//   S->C HeartbeatAck. A missing ack before the next heartbeat = zombie connection → reconnect + Resume.
+syntax = "proto3";
+
+package neoshard.v1;
+
+import "neoshard/v1/models.proto";
+
+message GatewayFrame {
+  oneof kind {
+    Hello hello = 1;
+    Heartbeat heartbeat = 2;
+    HeartbeatAck heartbeat_ack = 3;
+    Identify identify = 4;
+    Resume resume = 5;
+    Ready ready = 6;
+    Resumed resumed = 7;
+    InvalidSession invalid_session = 8;
+    Reconnect reconnect = 9;
+    DispatchBatch dispatch = 10;
+    ClientRequest request = 11;
+    GatewayError error = 12;
+  }
+}
+
+message Hello {
+  uint32 heartbeat_interval_ms = 1;
+  string node = 2;              // informational: serving node id
+}
+
+message Heartbeat { uint64 last_seq = 1; }
+message HeartbeatAck {}
+
+// Bitset of event groups the client wants. Server MUST NOT send events outside it.
+enum Intent {
+  INTENT_NONE = 0;
+  INTENT_GUILDS = 1;            // guild/channel/role lifecycle
+  INTENT_GUILD_MEMBERS = 2;     // member add/update/remove (privileged for bots)
+  INTENT_GUILD_MODERATION = 4;
+  INTENT_GUILD_MESSAGES = 8;
+  INTENT_GUILD_REACTIONS = 16;
+  INTENT_GUILD_TYPING = 32;
+  INTENT_PRESENCE = 64;         // privileged for bots
+  INTENT_VOICE_STATES = 128;
+  INTENT_DIRECT_MESSAGES = 256;
+  INTENT_MESSAGE_CONTENT = 512; // privileged for bots; without it content is empty for bots
+}
+
+message Identify {
+  string token = 1;
+  uint32 intents = 2;           // OR of Intent values; 0 = all non-privileged
+  ClientProperties properties = 3;
+  Status initial_status = 4;
+}
+
+message ClientProperties {
+  string os = 1;
+  string client = 2;            // e.g. "neoshard-web/0.1.0", "my-fork/1.2"
+  string core_version = 3;
+}
+
+message Resume {
+  string token = 1;
+  string session_id = 2;
+  uint64 last_seq = 3;
+}
+
+message Ready {
+  string session_id = 1;
+  string resume_url = 2;        // reconnect here for Resume (may equal the current URL)
+  User user = 3;
+  repeated Guild guilds = 4;    // full guild objects (channels, roles, self member)
+  repeated Channel private_channels = 5;
+  repeated ReadState read_states = 6;
+  repeated Presence presences = 7;
+  uint32 protocol_version = 8;
+  string files_base = 9;        // prefix for object keys (avatars, banners): files_base + "/" + key
+  repeated Relationship relationships = 10;
+}
+
+message Resumed { uint64 replayed = 1; }
+
+message InvalidSession { bool resumable = 1; }
+message Reconnect {}
+
+enum GatewayErrorCode {
+  GATEWAY_ERROR_CODE_UNKNOWN = 0;
+  GATEWAY_ERROR_CODE_DECODE = 1;
+  GATEWAY_ERROR_CODE_NOT_AUTHENTICATED = 2;
+  GATEWAY_ERROR_CODE_AUTH_FAILED = 3;
+  GATEWAY_ERROR_CODE_ALREADY_AUTHENTICATED = 4;
+  GATEWAY_ERROR_CODE_RATE_LIMITED = 5;
+  GATEWAY_ERROR_CODE_SESSION_TIMEOUT = 6;
+  GATEWAY_ERROR_CODE_INVALID_VERSION = 7;
+  GATEWAY_ERROR_CODE_INVALID_INTENTS = 8;
+}
+
+// Sent right before the server closes the socket.
+// WebSocket close codes: 4000 + GatewayErrorCode.
+message GatewayError {
+  GatewayErrorCode code = 1;
+  string message = 2;
+  bool reconnect = 3;           // client may reconnect (and Resume if it has a session)
+}
+
+// Dispatches are batched by the server (window ≤ 16 ms) to reduce frame count.
+message DispatchBatch { repeated Dispatch items = 1; }
+
+message Dispatch {
+  uint64 seq = 1;               // strictly increasing per session, starts at 1
+  Event event = 2;
+}
+
+message Event {
+  oneof kind {
+    Guild guild_create = 1;
+    Guild guild_update = 2;     // channels/roles not included; use the specific events
+    GuildDelete guild_delete = 3;
+    Channel channel_create = 4;
+    Channel channel_update = 5;
+    ChannelDelete channel_delete = 6;
+    Role role_create = 7;
+    Role role_update = 8;
+    RoleDelete role_delete = 9;
+    Member member_add = 10;
+    Member member_update = 11;
+    MemberRemove member_remove = 12;
+    Message message_create = 13;
+    Message message_update = 14;
+    MessageDelete message_delete = 15;
+    ReactionEvent reaction_add = 16;
+    ReactionEvent reaction_remove = 17;
+    Presence presence_update = 18;
+    TypingStart typing_start = 19;
+    ReadState read_state_update = 20;
+    VoiceState voice_state_update = 21;
+    PinsUpdate pins_update = 22;
+    User user_update = 23;
+    BanEvent ban_add = 24;
+    BanEvent ban_remove = 25;
+    InteractionCreate interaction_create = 26;
+    MlsEvent mls = 27;
+    MessageDeleteBulk message_delete_bulk = 28;
+    MemberListChunk member_list_chunk = 29;
+    SessionRevoked session_revoked = 30;
+    Relationship relationship_add = 31;          // new or changed (to the viewer only)
+    RelationshipRemove relationship_remove = 32;
+  }
+}
+
+message GuildDelete { uint64 id = 1; bool unavailable = 2; }
+message RelationshipRemove { uint64 user_id = 1; }
+message ChannelDelete { uint64 id = 1; uint64 guild_id = 2; }
+message RoleDelete { uint64 id = 1; uint64 guild_id = 2; }
+message MemberRemove { uint64 guild_id = 1; uint64 user_id = 2; }
+message MessageDelete { uint64 id = 1; uint64 channel_id = 2; uint64 guild_id = 3; }
+message MessageDeleteBulk { repeated uint64 ids = 1; uint64 channel_id = 2; uint64 guild_id = 3; }
+message ReactionEvent {
+  uint64 message_id = 1;
+  uint64 channel_id = 2;
+  uint64 guild_id = 3;
+  uint64 user_id = 4;
+  string emoji = 5;
+}
+message TypingStart { uint64 channel_id = 1; uint64 guild_id = 2; uint64 user_id = 3; int64 at = 4; }
+message PinsUpdate { uint64 channel_id = 1; uint64 guild_id = 2; }
+message BanEvent { uint64 guild_id = 1; User user = 2; }
+
+// Slash command invocation delivered to bot applications.
+message InteractionCreate {
+  uint64 id = 1;
+  string token = 2;             // used to respond via REST
+  uint64 application_id = 3;
+  uint64 guild_id = 4;
+  uint64 channel_id = 5;
+  User user = 6;
+  string command = 7;
+  string options_json = 8;
+}
+
+// Opaque MLS handshake/application messages relayed by the server.
+message MlsEvent {
+  uint64 channel_id = 1;
+  uint64 sender_id = 2;
+  bytes payload = 3;            // MLSMessage (RFC 9420 §6)
+  string kind = 4;              // "commit" | "welcome" | "proposal"
+}
+
+// Client → server requests that do not warrant a REST call.
+message ClientRequest {
+  oneof kind {
+    PresenceSet presence_set = 1;
+    TypingSend typing = 2;
+    VoiceStateSet voice_state = 3;
+    MemberListRequest member_list = 4;
+    AckChannel ack = 5;
+  }
+}
+
+message PresenceSet { Status status = 1; string custom_status = 2; string custom_emoji = 3; int64 custom_expires_at = 4; }
+message TypingSend { uint64 channel_id = 1; }
+message VoiceStateSet {
+  uint64 guild_id = 1;
+  uint64 channel_id = 2;        // 0 = leave
+  bool self_mute = 3;
+  bool self_deaf = 4;
+  bool video = 5;
+  bool streaming = 6;
+}
+// Lazy member list: request the [start, end) window of the sorted member list.
+message MemberListRequest { uint64 guild_id = 1; uint32 start = 2; uint32 end = 3; }
+// Sessions were logged out (logout, revoke, password change). The gateway closes
+// matching connections with GATEWAY_ERROR_CODE_AUTH_FAILED.
+message SessionRevoked {
+  repeated uint64 session_ids = 1;
+  bool all = 2;
+  uint64 except_session_id = 3;
+}
+message MemberListChunk {
+  uint64 guild_id = 1;
+  uint32 start = 2;
+  uint32 total = 3;
+  repeated Member members = 4;
+  repeated Presence presences = 5;
+}
+message AckChannel { uint64 channel_id = 1; uint64 message_id = 2; }

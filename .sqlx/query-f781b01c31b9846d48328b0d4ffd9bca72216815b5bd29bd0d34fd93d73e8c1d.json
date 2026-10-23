@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO messages (channel_id, id, guild_id, author_id, content, kind, reply_to_id, mention_everyone,\n                               mention_user_ids, mention_role_ids, attachments, nonce, webhook_id, sticker_id, e2ee_payload)\n         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Text",
+        "Int2",
+        "Int8",
+        "Bool",
+        "Int8Array",
+        "Int8Array",
+        "Jsonb",
+        "Text",
+        "Int8",
+        "Int8",
+        "Bytea"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f781b01c31b9846d48328b0d4ffd9bca72216815b5bd29bd0d34fd93d73e8c1d"
+}

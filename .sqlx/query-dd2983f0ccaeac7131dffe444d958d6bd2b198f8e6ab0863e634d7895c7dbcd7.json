@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM reactions WHERE channel_id = $1 AND message_id = ANY($2)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "dd2983f0ccaeac7131dffe444d958d6bd2b198f8e6ab0863e634d7895c7dbcd7"
+}

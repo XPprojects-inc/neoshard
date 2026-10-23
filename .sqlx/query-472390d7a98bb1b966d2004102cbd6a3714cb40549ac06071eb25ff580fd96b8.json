@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT count(DISTINCT emoji) AS \"c!\" FROM reactions WHERE channel_id = $2 AND message_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "c!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "472390d7a98bb1b966d2004102cbd6a3714cb40549ac06071eb25ff580fd96b8"
+}

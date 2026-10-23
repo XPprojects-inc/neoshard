@@ -1,0 +1,87 @@
+[workspace]
+resolver = "3"
+members = [
+  "crates/neoshard-proto",
+  "crates/neoshard-core",
+  "crates/examples/neoshard-cli",
+  "server/common",
+  "server/api",
+  "server/media-auth",
+  "server/federation",
+  "server/presence",
+  "server/gateway",
+  "server/neoshard-server",
+  "server/loadtest",
+]
+exclude = ["apps/desktop/src-tauri"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+repository = "https://github.com/neoshard/neoshard"
+homepage = "https://neoshard.ru"
+
+[workspace.dependencies]
+neoshard-proto = { path = "crates/neoshard-proto", default-features = false }
+neoshard-core = { path = "crates/neoshard-core" }
+neoshard-server-common = { path = "server/common" }
+neoshard-api = { path = "server/api" }
+neoshard-gateway = { path = "server/gateway" }
+neoshard-presence = { path = "server/presence" }
+neoshard-media-auth = { path = "server/media-auth" }
+neoshard-federation = { path = "server/federation" }
+
+prost = "0.14"
+prost-types = "0.14"
+prost-build = "0.14"
+protox = "0.10"
+pbjson = "0.9"
+pbjson-build = "0.9"
+bitflags = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tokio = { version = "1", features = ["full"] }
+futures-util = { version = "0.3", features = ["sink"] }
+axum = { version = "0.8", features = ["ws", "macros"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace", "compression-zstd", "limit"] }
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "postgres", "macros", "migrate", "json", "chrono"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+async-trait = "0.1"
+async-nats = "0.42"
+rusty-s3 = "0.7"
+url = "2"
+lettre = { version = "0.11", default-features = false, features = ["builder", "smtp-transport", "tokio1-rustls-tls", "hostname"] }
+argon2 = "0.5"
+totp-rs = { version = "5", features = ["gen_secret", "otpauth"] }
+rand = "0.8"
+sha2 = "0.10"
+hmac = "0.12"
+base64 = "0.22"
+aes-gcm = "0.10"
+ed25519-dalek = { version = "2", features = ["rand_core", "pkcs8"] }
+jsonwebtoken = "9"
+dashmap = "6"
+zstd = "0.13"
+ruzstd = "0.8"
+clap = { version = "4", features = ["derive", "env"] }
+tokio-tungstenite = "0.26"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+parking_lot = "0.12"
+bytes = "1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+
+[profile.release-wasm]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+panic = "abort"

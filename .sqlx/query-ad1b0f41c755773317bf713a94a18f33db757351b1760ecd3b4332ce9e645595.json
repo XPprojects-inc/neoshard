@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE federation_instances SET last_seen = now() WHERE domain = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ad1b0f41c755773317bf713a94a18f33db757351b1760ecd3b4332ce9e645595"
+}

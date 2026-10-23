@@ -1,0 +1,65 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT m.nick, m.avatar, m.banner, m.bio, m.pronouns, m.theme_colors, m.joined_at,\n                      COALESCE(array_agg(mr.role_id) FILTER (WHERE mr.role_id IS NOT NULL), '{}') AS \"role_ids!\"\n               FROM members m LEFT JOIN member_roles mr ON mr.guild_id = m.guild_id AND mr.user_id = m.user_id\n               WHERE m.guild_id = $1 AND m.user_id = $2\n               GROUP BY m.guild_id, m.user_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "nick",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "avatar",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "banner",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "bio",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "pronouns",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "theme_colors",
+        "type_info": "Int4Array"
+      },
+      {
+        "ordinal": 6,
+        "name": "joined_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "role_ids!",
+        "type_info": "Int8Array"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "64984d13852abd21e134cb5d9ed910f70c1c7f759691e703fe6a5f33f1e1546b"
+}

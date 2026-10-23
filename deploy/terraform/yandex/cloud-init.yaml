@@ -1,0 +1,23 @@
+#cloud-config
+package_update: true
+packages: [docker.io, docker-compose-v2, git]
+write_files:
+  - path: /opt/neoshard.env
+    permissions: "0600"
+    content: |
+      NEOSHARD_DOMAIN=${domain}
+      NEOSHARD_SECRET_KEY=${secret_key}
+      POSTGRES_PASSWORD=unused-managed-db
+      LIVEKIT_API_KEY=neoshard
+      LIVEKIT_API_SECRET=${livekit_key}
+      TURN_SECRET=${turn_secret}
+      S3_ENDPOINT=https://storage.yandexcloud.net
+      S3_BUCKET=${bucket}
+      S3_ACCESS_KEY=${s3_key}
+      S3_SECRET_KEY=${s3_secret}
+      S3_PUBLIC_URL=https://storage.yandexcloud.net/${bucket}
+      DATABASE_URL_OVERRIDE=${db_url}
+runcmd:
+  - git clone --depth 1 ${repo} /opt/neoshard
+  - cp /opt/neoshard.env /opt/neoshard/deploy/.env
+  - cd /opt/neoshard/deploy && docker compose -f docker-compose.yml -f docker-compose.managed-db.yml --profile monitoring --profile backup up -d --build

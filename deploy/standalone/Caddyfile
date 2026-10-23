@@ -1,0 +1,19 @@
+# Standalone stack entry point: API and gateway → server, everything else → web
+# (landing site on /, web client on /app/).
+{$NEOSHARD_SITE} {
+	encode zstd gzip
+	@backend path /api/* /gateway* /.well-known/neoshard /federation/* /healthz /files/*
+	handle @backend {
+		reverse_proxy server:8080 {
+			header_up X-Real-IP {remote_host}
+		}
+	}
+	handle {
+		reverse_proxy web:80
+	}
+}
+
+# Voice signalling (clients connect to ws(s)://<domain>:7880)
+{$NEOSHARD_VOICE_SITE} {
+	reverse_proxy livekit:7880
+}

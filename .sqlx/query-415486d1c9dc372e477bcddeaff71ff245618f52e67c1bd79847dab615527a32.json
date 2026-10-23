@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO channels (id, guild_id, type, name, parent_id, owner_id) VALUES ($1, $2, 6, $3, $4, $5)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "415486d1c9dc372e477bcddeaff71ff245618f52e67c1bd79847dab615527a32"
+}

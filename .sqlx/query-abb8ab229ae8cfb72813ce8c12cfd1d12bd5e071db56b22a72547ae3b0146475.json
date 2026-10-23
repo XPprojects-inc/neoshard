@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE sessions s SET last_seen_at = now()\n               FROM users u\n               WHERE s.token_hash = $1 AND u.id = s.user_id AND u.deleted_at IS NULL\n                 AND (s.expires_at IS NULL OR s.expires_at > now())\n               RETURNING s.id, s.user_id, u.bot",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "bot",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bytea"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "abb8ab229ae8cfb72813ce8c12cfd1d12bd5e071db56b22a72547ae3b0146475"
+}

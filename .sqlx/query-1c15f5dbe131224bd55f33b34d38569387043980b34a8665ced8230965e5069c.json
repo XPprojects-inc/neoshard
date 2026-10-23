@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE channels SET name = COALESCE($2, name), topic = COALESCE($3, topic), position = COALESCE($4, position),\n                    parent_id = CASE WHEN $5 THEN NULL ELSE COALESCE($6, parent_id) END,\n                    nsfw = COALESCE($7, nsfw), slowmode_seconds = COALESCE($8, slowmode_seconds)\n             WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        "Text",
+        "Int4",
+        "Bool",
+        "Int8",
+        "Bool",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1c15f5dbe131224bd55f33b34d38569387043980b34a8665ced8230965e5069c"
+}

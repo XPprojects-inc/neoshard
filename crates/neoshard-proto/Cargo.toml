@@ -1,0 +1,34 @@
+[package]
+name = "neoshard-proto"
+description = "NeoShard protocol: generated protobuf types, permissions, snowflakes, framing. Shared by server and client core."
+license = "GPL-3.0-or-later"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+
+[features]
+default = ["zstd-native"]
+# zstd via the C library (server, native clients)
+zstd-native = ["dep:zstd"]
+# pure-Rust zstd decoder (wasm32 clients)
+zstd-pure = ["dep:ruzstd"]
+
+[dependencies]
+prost.workspace = true
+pbjson.workspace = true
+serde.workspace = true
+bitflags.workspace = true
+thiserror.workspace = true
+zstd = { workspace = true, optional = true }
+ruzstd = { workspace = true, optional = true }
+
+[build-dependencies]
+prost-build.workspace = true
+protox.workspace = true
+pbjson-build.workspace = true
+prost-types.workspace = true
+prost.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

@@ -1,0 +1,136 @@
+// NeoShard client core API — boundary between neoshard-core and any UI.
+// SPDX-License-Identifier: CC-BY-4.0
+//
+// This is NOT a wire protocol to the server; it is the stable API of the
+// client core (TDLib-style). A UI sends `Command`s and periodically drains
+// `UpdateBatch`es (see docs/adr/0009-js-wasm-boundary.md).
+syntax = "proto3";
+
+package neoshard.core.v1;
+
+import "neoshard/v1/models.proto";
+import "neoshard/v1/gateway.proto";
+
+message Command {
+  uint64 request_id = 1;        // echoed in CommandResult; 0 = fire-and-forget
+  oneof kind {
+    Connect connect = 2;
+    Disconnect disconnect = 3;
+    SendMessage send_message = 4;
+    EditMessage edit_message = 5;
+    DeleteMessage delete_message = 6;
+    LoadHistory load_history = 7;
+    React react = 8;
+    SetTyping set_typing = 9;
+    AckChannel ack_channel = 10;
+    SetPresence set_presence = 11;
+    RetryMessage retry_message = 12;
+    SelectChannel select_channel = 13;
+    SetNetworkOnline network = 14;
+    Login login = 15;
+    Register register = 16;
+    SubmitMfa mfa = 17;
+    ApiRequest api = 18;
+    Logout logout = 19;
+    RequestMembers members = 20;
+    SetVoiceState voice = 21;
+  }
+}
+
+message Connect {
+  string api_base = 1;          // e.g. https://neoshard.ru
+  string gateway_url = 2;       // optional override, otherwise from /.well-known/neoshard
+  string token = 3;
+}
+message Disconnect {}
+message SendMessage {
+  uint64 channel_id = 1;
+  string content = 2;
+  uint64 reply_to_id = 3;
+  repeated uint64 attachment_ids = 4;   // from POST /channels/{id}/attachments, uploaded already
+  uint64 sticker_id = 5;                // a sticker of the guild (0 = none)
+}
+message EditMessage { uint64 channel_id = 1; uint64 message_id = 2; string content = 3; }
+message DeleteMessage { uint64 channel_id = 1; uint64 message_id = 2; }
+message LoadHistory { uint64 channel_id = 1; uint64 before_id = 2; uint32 limit = 3; }
+message React { uint64 channel_id = 1; uint64 message_id = 2; string emoji = 3; bool add = 4; }
+message SetTyping { uint64 channel_id = 1; }
+message AckChannel { uint64 channel_id = 1; uint64 message_id = 2; }
+message SetPresence { neoshard.v1.Status status = 1; string custom_status = 2; string custom_emoji = 3; int64 custom_expires_at = 4; }
+message RetryMessage { string nonce = 1; }
+message SelectChannel { uint64 channel_id = 1; }
+message SetNetworkOnline { bool online = 1; }
+message Login { string api_base = 1; string login = 2; string password = 3; }
+message Register { string api_base = 1; string username = 2; string password = 3; string email = 4; }
+// Second factor for the pending login (TOTP or backup code).
+message SubmitMfa { string code = 1; }
+// Generic authenticated REST call through the core (auth header, base URL, retries).
+// path is relative to the API base, e.g. "/guilds".
+message ApiRequest { string method = 1; string path = 2; string body_json = 3; }
+message Logout {}
+// Lazy member list window; answered by a member_list_chunk event.
+message RequestMembers { uint64 guild_id = 1; uint32 start = 2; uint32 end = 3; }
+message SetVoiceState { uint64 guild_id = 1; uint64 channel_id = 2; bool self_mute = 3; bool self_deaf = 4; bool video = 5; bool streaming = 6; }
+
+enum ConnectionState {
+  CONNECTION_STATE_DISCONNECTED = 0;
+  CONNECTION_STATE_CONNECTING = 1;
+  CONNECTION_STATE_IDENTIFYING = 2;
+  CONNECTION_STATE_READY = 3;
+  CONNECTION_STATE_RESUMING = 4;
+  CONNECTION_STATE_WAITING_RECONNECT = 5;
+  CONNECTION_STATE_AUTH_FAILED = 6;
+}
+
+message UpdateBatch { repeated Update updates = 1; }
+
+message Update {
+  oneof kind {
+    ConnectionStateChanged connection = 1;
+    neoshard.v1.Ready ready = 2;
+    neoshard.v1.Event event = 3;                    // server event after core applied it to cache
+    PendingMessage pending_message = 4;             // optimistic message enqueued
+    PendingMessageFailed pending_failed = 5;
+    PendingMessageSent pending_sent = 6;
+    History history = 7;
+    CommandResult result = 8;
+    ChannelPermissions permissions = 9;             // computed for the selected channel
+    AuthState auth = 10;
+    ApiResponse api = 11;
+  }
+}
+
+enum AuthPhase {
+  AUTH_PHASE_LOGGED_OUT = 0;
+  AUTH_PHASE_PENDING = 1;
+  AUTH_PHASE_MFA_REQUIRED = 2;
+  AUTH_PHASE_LOGGED_IN = 3;
+}
+message AuthState { AuthPhase phase = 1; string error = 2; }
+message ApiResponse { uint64 request_id = 1; uint32 status = 2; string body_json = 3; }
+
+message ConnectionStateChanged {
+  ConnectionState state = 1;
+  uint32 retry_in_ms = 2;
+  string reason = 3;          // why the server closed the session for good (shown to the user)
+}
+message PendingMessage { string nonce = 1; neoshard.v1.Message message = 2; }
+message PendingMessageFailed { string nonce = 1; uint64 channel_id = 2; string reason = 3; bool retryable = 4; }
+message PendingMessageSent { string nonce = 1; neoshard.v1.Message message = 2; }
+message History {
+  uint64 channel_id = 1;
+  repeated neoshard.v1.Message messages = 2;        // newest last
+  bool reached_start = 3;
+}
+message CommandResult { uint64 request_id = 1; bool ok = 2; string error = 3; }
+message ChannelPermissions { uint64 channel_id = 1; uint64 permissions = 2; }
+
+// Persisted offline cache (IndexedDB on web, SQLite on native).
+message CacheSnapshot {
+  neoshard.v1.Ready ready = 1;
+  repeated History histories = 2;
+  string api_base = 3;
+  string gateway_url = 4;
+  string token = 5;           // session token (same trust level as cookies/localStorage)
+  bytes mls_state = 6;        // E2EE device: keys and MLS group states (same trust level)
+}

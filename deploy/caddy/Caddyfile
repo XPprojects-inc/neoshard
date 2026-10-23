@@ -1,0 +1,9 @@
+# Public entry point: everything on 443 (HTTP API, WebSocket gateway, web client).
+{$NEOSHARD_DOMAIN} {
+	encode zstd gzip
+	@backend path /api/* /gateway* /.well-known/neoshard /federation/* /healthz
+	reverse_proxy @backend server:8080 {
+		header_up X-Real-IP {remote_host}
+	}
+	reverse_proxy web:80
+}

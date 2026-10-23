@@ -1,0 +1,13 @@
+[package]
+name = "neoshard-cli"
+description = "Minimal terminal client on top of neoshard-core: a starting point for forks."
+license = "GPL-3.0-or-later"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+neoshard-core.workspace = true
+tokio.workspace = true
+clap.workspace = true
+anyhow.workspace = true

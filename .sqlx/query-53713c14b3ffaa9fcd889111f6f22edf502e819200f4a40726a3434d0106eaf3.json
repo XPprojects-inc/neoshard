@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM forum_tags WHERE id = $1 AND channel_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "53713c14b3ffaa9fcd889111f6f22edf502e819200f4a40726a3434d0106eaf3"
+}

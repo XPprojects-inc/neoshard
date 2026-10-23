@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/mobile-schema.json",
+  "identifier": "default",
+  "description": "The main window may only talk to the NeoShard core commands and events.",
+  "windows": ["main"],
+  "permissions": ["core:event:default", "core:app:default"]
+}

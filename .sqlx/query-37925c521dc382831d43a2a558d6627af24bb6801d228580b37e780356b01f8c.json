@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE invites SET uses = uses + 1\n         WHERE code = $1 AND (expires_at IS NULL OR expires_at > now()) AND (max_uses = 0 OR uses < max_uses)\n         RETURNING guild_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "guild_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "37925c521dc382831d43a2a558d6627af24bb6801d228580b37e780356b01f8c"
+}

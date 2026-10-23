@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE members SET avatar = COALESCE($3, avatar), banner = COALESCE($4, banner), bio = COALESCE($5, bio),\n                    pronouns = COALESCE($6, pronouns), theme_colors = COALESCE($7, theme_colors)\n             WHERE guild_id = $1 AND user_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Int4Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "49d7aaa5f92f62ced8b832687a7b230c3d9f55852f403ad13d0fb07eb2b69466"
+}

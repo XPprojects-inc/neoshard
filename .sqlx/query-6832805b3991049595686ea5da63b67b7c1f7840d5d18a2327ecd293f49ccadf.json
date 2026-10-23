@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE channels SET parent_id = $1 WHERE id IN ($2, $3)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "6832805b3991049595686ea5da63b67b7c1f7840d5d18a2327ecd293f49ccadf"
+}

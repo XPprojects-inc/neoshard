@@ -1,0 +1,5 @@
+{
+  "$comment": "releases: where the download buttons lead when this server has no builds of its own (downloads/latest.json). donate: links for «Поддержите разработку», https only, e.g. { \"title\": \"ЮMoney\", \"url\": \"https://yoomoney.ru/to/...\", \"note\": \"картой или кошельком\" }",
+  "releases": "https://github.com/XPprojects-inc/neoshard/releases/latest",
+  "donate": []
+}

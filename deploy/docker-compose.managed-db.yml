@@ -1,0 +1,11 @@
+# Overlay: use a managed PostgreSQL (Yandex MDB) instead of the bundled one.
+#   docker compose -f docker-compose.yml -f docker-compose.managed-db.yml up -d
+services:
+  server:
+    environment:
+      DATABASE_URL: ${DATABASE_URL_OVERRIDE}
+    depends_on: !reset {}
+  postgres:
+    profiles: ["bundled-db"]
+  backup:
+    profiles: ["bundled-db"]

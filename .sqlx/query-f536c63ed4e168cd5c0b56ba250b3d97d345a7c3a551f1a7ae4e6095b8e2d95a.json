@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM federation_nonces WHERE seen_at < now() - interval '1 hour'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "f536c63ed4e168cd5c0b56ba250b3d97d345a7c3a551f1a7ae4e6095b8e2d95a"
+}

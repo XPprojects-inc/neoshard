@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM permission_overwrites WHERE channel_id = $1 AND target_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "7341a3dbce15d4527a549f49dd6e369b07c6a84117ecc1a41910def7c25fc5cf"
+}

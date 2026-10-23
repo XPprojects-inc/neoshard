@@ -1,0 +1,14 @@
+target/
+node_modules/
+dist/
+*.log
+.env
+/apps/desktop/src-tauri/target/
+/apps/desktop/src-tauri/gen/
+/apps/android/src-tauri/gen/schemas/
+packages/core/src/gen/
+packages/core/wasm/
+packages/core/wasm-e2ee/
+/data/
+/apps/site/downloads/
+/.claude/

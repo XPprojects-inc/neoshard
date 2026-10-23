@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT mfa_secret_enc FROM users WHERE id = $1 AND mfa_enabled",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "mfa_secret_enc",
+        "type_info": "Bytea"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "f535a463f4bed5b8f7c2af72e55c003fe28fc875333448973f61d98d6d1b984e"
+}

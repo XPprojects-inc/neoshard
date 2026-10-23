@@ -1,0 +1,37 @@
+[package]
+name = "neoshard-server-common"
+description = "Shared server infrastructure: config, database, auth primitives, event bus, repository."
+license = "AGPL-3.0-or-later"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[features]
+default = []
+nats = ["dep:async-nats"]
+
+[dependencies]
+neoshard-proto = { workspace = true, features = ["zstd-native"] }
+sqlx.workspace = true
+chrono.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+clap.workspace = true
+argon2.workspace = true
+totp-rs.workspace = true
+rand.workspace = true
+sha2.workspace = true
+base64.workspace = true
+aes-gcm.workspace = true
+dashmap.workspace = true
+async-trait.workspace = true
+prost.workspace = true
+futures-util.workspace = true
+async-nats = { workspace = true, optional = true }
+
+[dev-dependencies]
+tokio.workspace = true

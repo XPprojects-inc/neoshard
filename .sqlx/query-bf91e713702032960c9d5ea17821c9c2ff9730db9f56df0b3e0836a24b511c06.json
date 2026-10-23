@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO read_states (user_id, channel_id, mention_count)\n         SELECT u, $2, 1 FROM unnest($1::bigint[]) AS u\n         WHERE EXISTS (SELECT 1 FROM users WHERE id = u)\n         ON CONFLICT (user_id, channel_id) DO UPDATE SET mention_count = read_states.mention_count + 1\n         RETURNING user_id, last_read_message_id, mention_count",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "last_read_message_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "mention_count",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8Array",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "bf91e713702032960c9d5ea17821c9c2ff9730db9f56df0b3e0836a24b511c06"
+}

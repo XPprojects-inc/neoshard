@@ -1,0 +1,17 @@
+# NeoShard server image. Build context: repository root.
+# Queries are checked against .sqlx (SQLX_OFFLINE): no database needed at build time.
+FROM rust:1.94-bookworm AS build
+WORKDIR /src
+COPY . .
+ENV SQLX_OFFLINE=true
+RUN cargo build --release -p neoshard-server --features nats && strip target/release/neoshard-server
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* \
+ && useradd --system --uid 10001 neoshard
+COPY --from=build /src/target/release/neoshard-server /usr/local/bin/neoshard-server
+USER neoshard
+ENV NEOSHARD_BIND=0.0.0.0:8080 NEOSHARD_LOG_FORMAT=json
+EXPOSE 8080
+HEALTHCHECK --interval=15s --timeout=3s CMD ["/bin/sh", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /healthz HTTP/1.0\r\n\r\n' >&3 && grep -q ok <&3"]
+ENTRYPOINT ["/usr/local/bin/neoshard-server"]

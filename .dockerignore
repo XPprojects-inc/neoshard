@@ -1,0 +1,14 @@
+# Keep the Docker build context small: sources only.
+**/target
+**/node_modules
+**/dist
+**/gen/android/app/build
+**/gen/android/.gradle
+**/gen/schemas
+packages/core/src/gen
+packages/core/wasm
+packages/core/wasm-e2ee
+data
+.git
+.claude
+*.log

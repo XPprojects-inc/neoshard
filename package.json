@@ -1,0 +1,15 @@
+{
+  "name": "neoshard",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "workspaces": ["packages/core", "packages/ui", "apps/web", "apps/desktop", "apps/android"],
+  "scripts": {
+    "proto": "npm run proto -w @neoshard/core",
+    "wasm": "npm run wasm -w @neoshard/core",
+    "dev": "npm run dev -w @neoshard/web",
+    "build": "npm run build -w @neoshard/web",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": { "node": ">=20" }
+}

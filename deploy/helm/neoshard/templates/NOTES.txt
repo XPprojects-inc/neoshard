@@ -1,0 +1,2 @@
+NeoShard is starting at https://{{ .Values.domain }}
+Create the secret {{ .Release.Name }}-secrets (see values.yaml → secrets) before the pods can start.

@@ -1,0 +1,9 @@
+{
+  "$comment": "Rebranding point for forks: name, logo, default instance, feature flags. See FORKING.md.",
+  "name": "NeoShard",
+  "logo": "/favicon.svg",
+  "defaultInstance": "",
+  "allowCustomInstance": true,
+  "defaultTheme": "neoshard-dark",
+  "features": { "voice": true, "plugins": true, "e2ee": false, "federation": true }
+}

@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT public_key, blocked FROM federation_instances WHERE domain = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "public_key",
+        "type_info": "Bytea"
+      },
+      {
+        "ordinal": 1,
+        "name": "blocked",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "0cd7817002fc307b4bd459859171d2e61345dd21aa04bfbf539d2a356152bd85"
+}

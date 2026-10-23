@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT c.application_id, c.name, c.description, c.options, ap.name AS app_name\n         FROM application_commands c\n         JOIN applications ap ON ap.id = c.application_id\n         JOIN members m ON m.user_id = ap.bot_user_id AND m.guild_id = $1\n         WHERE c.guild_id IN (0, $1) ORDER BY c.name",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "application_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "options",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 4,
+        "name": "app_name",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "34abc2d8b2b034686cf4c51ad6aa398829c0cd6ff3c0de4bad5633baabccf5fb"
+}

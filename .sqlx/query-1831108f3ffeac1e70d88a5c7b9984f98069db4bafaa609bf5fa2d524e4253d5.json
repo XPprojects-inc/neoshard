@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT peer_id FROM relationships WHERE user_id = $1 AND kind = 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "peer_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "1831108f3ffeac1e70d88a5c7b9984f98069db4bafaa609bf5fa2d524e4253d5"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@neoshard/android",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "tauri": "tauri",
+    "init": "tauri android init --ci",
+    "build": "tauri android build --apk --target aarch64 --ci"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.0"
+  }
+}

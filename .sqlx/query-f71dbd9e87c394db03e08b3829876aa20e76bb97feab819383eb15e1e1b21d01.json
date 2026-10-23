@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE users SET custom_status = $2, custom_status_emoji = $3, custom_status_expires_at = $4 WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        "Text",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f71dbd9e87c394db03e08b3829876aa20e76bb97feab819383eb15e1e1b21d01"
+}

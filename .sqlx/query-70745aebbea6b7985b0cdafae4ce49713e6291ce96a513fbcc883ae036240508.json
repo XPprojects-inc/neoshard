@@ -1,0 +1,94 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, guild_id, type, name, topic, position, parent_id, nsfw, slowmode_seconds, last_message_id, owner_id, e2ee, archived\n         FROM channels WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "guild_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "type",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 3,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "topic",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "position",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 6,
+        "name": "parent_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 7,
+        "name": "nsfw",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "slowmode_seconds",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 9,
+        "name": "last_message_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 10,
+        "name": "owner_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 11,
+        "name": "e2ee",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 12,
+        "name": "archived",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "70745aebbea6b7985b0cdafae4ce49713e6291ce96a513fbcc883ae036240508"
+}

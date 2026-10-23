@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="NeoShard">
+  <!-- NeoShard mark: a faceted crystal shard with one cut edge and an inner spark. Original artwork, CC-BY-4.0. -->
+  <defs>
+    <linearGradient id="ns-g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5ad6bd"/>
+      <stop offset="1" stop-color="#1a8f7c"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 4 L52 14 L56 36 L40 60 L18 54 L8 30 L20 10 Z" fill="url(#ns-g)"/>
+  <path d="M32 4 L36 30 L56 36 M36 30 L18 54 M36 30 L8 30" fill="none" stroke="#06231d" stroke-opacity=".35" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M30 22 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#ffffff"/>
+</svg>

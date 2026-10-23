@@ -1,0 +1,32 @@
+{
+  "name": "@neoshard/web",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@neoshard/core": "*",
+    "@neoshard/ui": "*",
+    "@tanstack/solid-virtual": "^3.13.0",
+    "@tauri-apps/api": "^2.12.4",
+    "livekit-client": "^2.23.0",
+    "lucide-solid": "^1.59.0",
+    "motion": "^14.3.0",
+    "solid-js": "^1.9.10"
+  },
+  "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
+    "jsdom": "^27.0.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.0",
+    "vite-plugin-solid": "^2.11.14",
+    "vitest": "^4.1.0"
+  }
+}

@@ -1,0 +1,19 @@
+# NeoShard web image: the landing site (apps/site) on / and the web client
+# (WASM core + Solid UI) on /app/, served as static files by Caddy.
+FROM rust:1.94-bookworm AS build
+# Node 22 for the JS toolchain (Debian's Node is too old for Vite).
+COPY --from=node:22-bookworm-slim /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:22-bookworm-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+ && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
+ && rustup target add wasm32-unknown-unknown \
+ && cargo install wasm-bindgen-cli --version 0.2.129 --locked
+WORKDIR /src
+COPY . .
+RUN npm ci && npm run proto && npm run wasm && NEOSHARD_WEB_BASE=app npm run build
+
+FROM caddy:2-alpine
+COPY --from=build /src/apps/web/dist /srv/app
+COPY apps/site /srv/site
+RUN rm -rf /srv/site/downloads
+COPY deploy/caddy/Caddyfile.static /etc/caddy/Caddyfile

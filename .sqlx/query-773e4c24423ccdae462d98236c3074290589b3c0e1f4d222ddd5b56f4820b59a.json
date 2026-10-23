@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE members SET timeout_until = now() + interval '10 minutes' WHERE guild_id = $1 AND user_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "773e4c24423ccdae462d98236c3074290589b3c0e1f4d222ddd5b56f4820b59a"
+}

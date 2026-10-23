@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE automod_rules SET name = COALESCE($3, name), config = COALESCE($4, config), action = COALESCE($5, action), enabled = COALESCE($6, enabled)\n         WHERE id = $1 AND guild_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text",
+        "Jsonb",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4311c1dd10b3962d360a9be3e209f14d58436c2dcab7c0f4400f713d41077493"
+}

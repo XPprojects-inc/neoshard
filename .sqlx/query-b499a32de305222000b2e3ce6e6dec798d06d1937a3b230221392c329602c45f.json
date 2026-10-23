@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT i.code, i.guild_id, i.channel_id, i.inviter_id, i.max_uses, i.uses, i.expires_at, g.name\n         FROM invites i JOIN guilds g ON g.id = i.guild_id WHERE i.code = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "code",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "guild_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "channel_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "inviter_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "max_uses",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "uses",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 6,
+        "name": "expires_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "name",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "b499a32de305222000b2e3ce6e6dec798d06d1937a3b230221392c329602c45f"
+}

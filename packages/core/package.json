@@ -1,0 +1,27 @@
+{
+  "name": "@neoshard/core",
+  "version": "0.1.0",
+  "description": "NeoShard client core for the web: WASM build of neoshard-core plus a typed wrapper.",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": ["src", "wasm"],
+  "sideEffects": false,
+  "scripts": {
+    "proto": "buf generate",
+    "wasm": "node scripts/build-wasm.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.16.0"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "^1.74.0",
+    "@bufbuild/protoc-gen-es": "^2.16.0",
+    "binaryen": "^123.0.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.0"
+  }
+}
