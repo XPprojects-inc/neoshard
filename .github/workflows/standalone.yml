@@ -40,10 +40,11 @@ jobs:
           set -euo pipefail
           api=http://localhost/api/v1
           # landing site, web client, invite redirect, discovery document
-          curl -fsS http://localhost/ | grep -q 'NeoShard'
-          curl -fsS http://localhost/app/ | grep -q '/app/assets/'
+          # (responses go to variables first: `curl | grep -q` races with pipefail, curl exit 23)
+          page=$(curl -fsS http://localhost/); grep -q 'NeoShard' <<< "$page"
+          app=$(curl -fsS http://localhost/app/); grep -q '/app/assets/' <<< "$app"
           test "$(curl -s -o /dev/null -w '%{redirect_url}' http://localhost/invite/AbC123)" = "http://localhost/app/?invite=AbC123"
-          curl -fsS http://localhost/.well-known/neoshard | grep -q '"gateway"'
+          wk=$(curl -fsS http://localhost/.well-known/neoshard); grep -q '"gateway"' <<< "$wk"
           # register, create a server, post a message, read it back
           tok=$(curl -fsS -X POST $api/auth/register -H 'content-type: application/json' \
             -d '{"username":"smoke","password":"smoke-test-password-1","email":"smoke@example.com"}' | jq -r .token)
@@ -52,7 +53,7 @@ jobs:
           cid=$(curl -fsS $api/guilds/$gid/channels -H "authorization: Bearer $tok" | jq -r '[.[] | select(.type=="CHANNEL_TYPE_TEXT")][0].id')
           curl -fsS -X POST $api/channels/$cid/messages -H "authorization: Bearer $tok" -H 'content-type: application/json' \
             -d '{"content":"hello from CI"}' > /dev/null
-          curl -fsS "$api/channels/$cid/messages?limit=5" -H "authorization: Bearer $tok" | grep -q 'hello from CI'
+          msgs=$(curl -fsS "$api/channels/$cid/messages?limit=5" -H "authorization: Bearer $tok"); grep -q 'hello from CI' <<< "$msgs"
           # voice: a token for the voice channel and LiveKit answering through Caddy
           vid=$(curl -fsS $api/guilds/$gid/channels -H "authorization: Bearer $tok" | jq -r '[.[] | select(.type=="CHANNEL_TYPE_VOICE")][0].id')
           curl -fsS -X POST $api/channels/$vid/voice -H "authorization: Bearer $tok" -H 'content-type: application/json' -d '{}' | jq -e .token > /dev/null
