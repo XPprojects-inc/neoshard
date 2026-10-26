@@ -1,6 +1,6 @@
 [package]
 name = "neoshard-desktop"
-version = "0.1.5"
+version = "0.1.6"
 description = "NeoShard desktop (Tauri 2) with the native neoshard-core"
 license = "GPL-3.0-or-later"
 edition = "2024"
